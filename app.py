@@ -2,7 +2,7 @@ import time
 import random
 import math
 import streamlit as st
-import matplotlib.pyplot as plt
+import pandas as pd
 
 # Cấu hình trang
 st.set_page_config(
@@ -82,48 +82,40 @@ with col_btn2:
         st.session_state.running = False
 
 # Thẻ hiển thị chỉ số LED
-m1, m2, m3, m4 = st.columns(4)
+metric_container = st.container()
 
-current_fuel = st.session_state.y_fuel[-1] if st.session_state.y_fuel else 0.0
-current_power = st.session_state.y_power[-1] if st.session_state.y_power else 0.0
-current_t4 = st.session_state.y_t4[-1] if st.session_state.y_t4 else 0.0
-current_energy = st.session_state.total_energy_kwh
+with metric_container:
+    m1, m2, m3, m4 = st.columns(4)
 
-m1.metric("🔥 Rác Nạp Vào", f"{current_fuel:.1f} g/s")
-m2.metric("⚡ Công Suất Thực Lưới", f"{current_power:.2f} kW")
-m3.metric("🌡️ Khí Hoàn Lưu (T4)", f"{current_t4:.1f} °C")
-m4.metric("🔋 Điện Tích Lũy", f"{current_energy:.4f} kWh")
+    current_fuel = st.session_state.y_fuel[-1] if st.session_state.y_fuel else 0.0
+    current_power = st.session_state.y_power[-1] if st.session_state.y_power else 0.0
+    current_t4 = st.session_state.y_t4[-1] if st.session_state.y_t4 else 0.0
+    current_energy = st.session_state.total_energy_kwh
 
-# Khu vực vẽ biểu đồ
+    m1.metric("🔥 Rác Nạp Vào", f"{current_fuel:.1f} g/s")
+    m2.metric("⚡ Công Suất Thực Lưới", f"{current_power:.2f} kW")
+    m3.metric("🌡️ Khí Hoàn Lưu (T4)", f"{current_t4:.1f} °C")
+    m4.metric("🔋 Điện Tích Lũy", f"{current_energy:.4f} kWh")
+
+# Khu vực biểu đồ
+st.subheader("📊 Biểu Đồ Thời Gian Thực")
 chart_placeholder = st.empty()
 
-def draw_chart():
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6), sharex=True)
-    fig.patch.set_facecolor('#0f172a')
-    
-    for ax in (ax1, ax2):
-        ax.set_facecolor('#1e293b')
-        ax.tick_params(colors='#cbd5e1', labelsize=9)
-        ax.grid(True, linestyle=":", alpha=0.3)
-        for spine in ax.spines.values():
-            spine.set_color('#475569')
+def update_chart():
+    if not st.session_state.x_data:
+        return
+    df = pd.DataFrame(
+        {
+            "Tải Rác (g/s)": st.session_state.y_fuel[-20:],
+            "Điện Lưới (kW)": st.session_state.y_power[-20:],
+        },
+        index=st.session_state.x_data[-20:]
+    )
+    chart_placeholder.line_chart(df)
 
-    # Lấy 20 điểm dữ liệu gần nhất để hiển thị
-    x_vis = st.session_state.x_data[-20:]
-    y_fuel_vis = st.session_state.y_fuel[-20:]
-    y_power_vis = st.session_state.y_power[-20:]
+update_chart()
 
-    ax1.set_ylabel("Tải Rác (g/s)", color="#f43f5e", fontweight="bold")
-    ax1.plot(x_vis, y_fuel_vis, color="#f43f5e", marker="o", linewidth=2)
-
-    ax2.set_ylabel("Điện lưới (kW)", color="#38bdf8", fontweight="bold")
-    ax2.set_xlabel("Thời gian (giây)", color="#cbd5e1")
-    ax2.plot(x_vis, y_power_vis, color="#38bdf8", marker="o", linewidth=2)
-
-    plt.tight_layout()
-    return fig
-
-# Vòng lập cập nhật dữ liệu tự động
+# Vòng lặp cập nhật dữ liệu
 if st.session_state.running:
     st.session_state.time_elapsed += 1
     fuel_g = random.uniform(80.0, 95.0)
@@ -140,9 +132,5 @@ if st.session_state.running:
     st.session_state.y_t4.append(t4_real)
     st.session_state.y_energy.append(st.session_state.total_energy_kwh)
 
-    chart_placeholder.pyplot(draw_chart())
     time.sleep(1)
     st.rerun()
-else:
-    if st.session_state.x_data:
-        chart_placeholder.pyplot(draw_chart())
