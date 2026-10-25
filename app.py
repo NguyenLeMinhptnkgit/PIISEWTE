@@ -30,17 +30,17 @@ st.markdown("""
         margin-bottom: 8px !important;
     }
     
-    /* TẠO HỘP BO TRÒN VÀ VIỀN NỔI BẬT CHO 4 Ô GIÁ TRỊ */
+    /* TẠO HỘP BO TRÒN VÀ VIỀN NỔI BẬT CHO 4 Ô GIÁ TRỊ METRIC */
     [data-testid="stMetric"] {
         background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
         border: 1.5px solid #38bdf8 !important;
         border-radius: 10px !important;
-        padding: 8px 10px !important;
+        padding: 6px 8px !important;
         box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2) !important;
         text-align: center !important;
     }
     [data-testid="stMetricValue"] {
-        font-size: 15px !important;
+        font-size: 14px !important;
         font-weight: bold !important;
         color: #38bdf8 !important;
     }
@@ -112,7 +112,7 @@ if 'base_fuel' not in st.session_state:
 # Tiêu đề chính
 st.markdown("<div class='main-title'>⚡ GIÁM SÁT ĐỒNG BỘ TOÀN DIỆN NHÀ MÁY ĐIỆN RÁC EFGT</div>", unsafe_allow_html=True)
 
-# BẢNG ĐIỀU KHIỂN & Ô NHẬP GIÁ TRỊ TẢI RÁC
+# BẢNG ĐIỀU KHIỂN & Ô NHẬP TẢI RÁC
 col_ctrl1, col_ctrl2, col_input = st.columns([1, 1, 3])
 
 with col_ctrl1:
@@ -130,30 +130,57 @@ with col_ctrl2:
         st.session_state.total_energy_kwh = 0.0
         st.session_state.running = False
 
-# THAY SLIDER BẰNG Ô NHẬP SỐ (ST.NUMBER_INPUT)
 with col_input:
     fuel_input = st.number_input(
         "🔥 Nhập lượng rác nạp (g/s):",
         min_value=10.0,
-        max_value=300.0,
+        max_value=500.0,
         value=float(st.session_state.base_fuel),
         step=1.0,
         disabled=st.session_state.running,
-        help="Nhập số từ 10.0 đến 300.0 g/s khi hệ thống đang dừng"
+        help="Nhập số từ 10.0 đến 500.0 g/s khi hệ thống đang dừng"
     )
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG
+# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (TẠO NGỌN LỬA NHIỀU CHÓP BÙNG CHÁY TRÊN NÓC LÒ ĐỐT)
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
-    flame_size = int(fuel_grams * 0.22) + 8 if is_running else 0
+    flame_height = min(max(int(fuel_grams * 0.12), 12), 32) if is_running else 0
     
-    flame_svg = f"""
-    <polygon points="290,{325 - flame_size} 270,325 310,325" fill="#f97316" stroke="#ef4444" stroke-width="1.5">
-        <animate attributeName="opacity" values="0.7;1;0.7" dur="0.3s" repeatCount="indefinite" />
-    </polygon>
-    """ if is_running else ""
+    if is_running:
+        y_top_1 = 280 - flame_height
+        y_top_2 = 280 - int(flame_height * 1.35)
+        y_top_3 = 280 - int(flame_height * 0.95)
+        
+        flame_svg = f"""
+        <path d="M 220 280 
+                 L 228 {y_top_1} L 236 280 
+                 L 245 {y_top_2} L 254 280 
+                 L 263 {y_top_3} L 272 280 
+                 L 281 {y_top_2} L 290 280 
+                 L 299 {y_top_1} L 308 280 
+                 L 317 {y_top_2} L 326 280 
+                 L 335 {y_top_3} L 344 280 
+                 L 352 {y_top_1} L 360 280 Z" 
+              fill="#ef4444" stroke="#f97316" stroke-width="2">
+            <animate attributeName="opacity" values="0.75;1;0.75" dur="0.25s" repeatCount="indefinite" />
+        </path>
+        <path d="M 225 280 
+                 L 233 {y_top_1 + 4} L 241 280 
+                 L 250 {y_top_2 + 5} L 259 280 
+                 L 268 {y_top_3 + 3} L 277 280 
+                 L 286 {y_top_2 + 6} L 295 280 
+                 L 304 {y_top_1 + 4} L 313 280 
+                 L 322 {y_top_2 + 5} L 331 280 
+                 L 340 {y_top_3 + 3} L 349 280 
+                 L 355 280 Z" 
+              fill="#f97316">
+            <animate attributeName="opacity" values="1;0.7;1" dur="0.2s" repeatCount="indefinite" />
+        </path>
+        """
+    else:
+        flame_svg = ""
 
     svg = f"""
     <svg viewBox="0 0 600 380" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background-color: #1e293b; border-radius: 10px; border: 1px solid #334155; padding: 5px;">
@@ -227,10 +254,9 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     """
     return svg
 
-# CHIA BỐ CỤC 2 CỘT
+# CHIA BỐ CỤC 2 CỘT (CỘT TRÁI: SƠ ĐỒ; CỘT PHẢI: BIỂU ĐỒ + 4 Ô GIÁ TRỊ)
 col_left, col_right = st.columns([1, 1])
 
-# CẬP NHẬT GIÁ TRỊ TỨC THÌ KHI THAY ĐỔI Ô NHẬP SỐ
 if not st.session_state.running:
     current_fuel = st.session_state.base_fuel
     p_calc, t4_calc, _ = tinh_toan_nguoc_efgt(current_fuel / 1000.0)
@@ -243,22 +269,23 @@ else:
     current_t4 = st.session_state.y_t4[-1] if st.session_state.y_t4 else 0.0
     current_energy = st.session_state.total_energy_kwh
 
-# --- CỘT TRÁI: SƠ ĐỒ ĐỘNG CƠ + 4 HỘP GIÁ TRỊ BO TRÒN ---
+# --- CỘT TRÁI: SƠ ĐỒ HỆ THỐNG ---
 with col_left:
     st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>⚙️ SƠ ĐỒ HỆ THỐNG EFGT</p>", unsafe_allow_html=True)
     svg_code = tao_so_do_svg_moi(st.session_state.running, current_fuel)
     st.markdown(svg_code, unsafe_allow_html=True)
 
+# --- CỘT PHẢI: BIỂU ĐỒ REAL-TIME & 4 HỘP GIÁ TRỊ ĐẶT Ở DƯỚI (VỊ TRÍ DẤU X) ---
+with col_right:
+    st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>📊 BIỂU ĐỒ REAL-TIME</p>", unsafe_allow_html=True)
+    chart_placeholder = st.empty()
+
+    st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("🔥 Rác Nạp", f"{current_fuel:.1f} g/s")
     m2.metric("⚡ Điện Lưới", f"{current_power:.2f} kW")
     m3.metric("🌡️ Khí T4", f"{current_t4:.1f} °C")
     m4.metric("🔋 Tích Lũy", f"{current_energy:.4f} kWh")
-
-# --- CỘT PHẢI: BIỂU ĐỒ REAL-TIME ---
-with col_right:
-    st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>📊 BIỂU ĐỒ REAL-TIME</p>", unsafe_allow_html=True)
-    chart_placeholder = st.empty()
 
 def render_chart():
     if not st.session_state.x_data:
