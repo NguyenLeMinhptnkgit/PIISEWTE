@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- CSS TỐI ƯU GIAO DIỆN & TẠO HỘP GIÁ TRỊ BO TRÒN NỔI BẬT ---
+# --- CSS TỐI ƯU GIAO DIỆN CANVA & HIGHLIGHT HỘP GIÁ TRỊ METRIC ---
 st.markdown("""
 <style>
     .block-container {
@@ -143,7 +143,7 @@ with col_input:
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (QUAY LẠI NGỌN LỬA TAM GIÁC ĐƠN TRUYỀN THỐNG)
+# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (CẬP NHẬT HƯỚNG MŨI TÊN TỪ HTHE XUỐNG MÁY NÉN KHÍ)
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
     flame_size = int(fuel_grams * 0.22) + 8 if is_running else 0
@@ -211,11 +211,18 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
 
       <!-- 7. Đường ống & Mũi tên -->
       <line x1="30" y1="240" x2="120" y2="240" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
-      <path d="M 170 200 L 170 140 L 215 140" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
+      
+      <!-- CẬP NHẬT: Mũi tên chỉ từ Bộ HTHE đi xuống Máy nén khí -->
+      <path d="M 225 140 L 170 140 L 170 190" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
+      
+      <!-- Mũi tên chỉ từ Bộ HTHE đi xuống Tuabin khí -->
       <path d="M 355 140 L 430 140 L 430 190" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
+      
+      <!-- Đường ống Tuabin -> Lò đốt -->
       <path d="M 430 280 L 430 315 L 370 315" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       <text x="430" y="335" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Khí sạch nóng</text>
 
+      <!-- Đường ống HTHE -> Lọc khí thải -->
       <path d="M 290 105 L 290 58 L 215 58" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       <text x="270" y="48" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Khói thải lò</text>
 
@@ -234,4 +241,116 @@ if not st.session_state.running:
     p_calc, t4_calc, _ = tinh_toan_nguoc_efgt(current_fuel / 1000.0)
     current_power = p_calc
     current_t4 = t4_calc
-    current_energy =
+    current_energy = st.session_state.total_energy_kwh
+else:
+    current_fuel = st.session_state.y_fuel[-1] if st.session_state.y_fuel else st.session_state.base_fuel
+    current_power = st.session_state.y_power[-1] if st.session_state.y_power else 0.0
+    current_t4 = st.session_state.y_t4[-1] if st.session_state.y_t4 else 0.0
+    current_energy = st.session_state.total_energy_kwh
+
+# --- CỘT TRÁI: SƠ ĐỒ HỆ THỐNG ---
+with col_left:
+    st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>⚙️ SƠ ĐỒ HỆ THỐNG EFGT</p>", unsafe_allow_html=True)
+    svg_code = tao_so_do_svg_moi(st.session_state.running, current_fuel)
+    st.markdown(svg_code, unsafe_allow_html=True)
+
+# --- CỘT PHẢI: BIỂU ĐỒ REAL-TIME & 4 HỘP GIÁ TRỊ METRIC BÊN DƯỚI ---
+with col_right:
+    st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>📊 BIỂU ĐỒ REAL-TIME</p>", unsafe_allow_html=True)
+    chart_placeholder = st.empty()
+
+    st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("🔥 Rác Nạp", f"{current_fuel:.1f} g/s")
+    m2.metric("⚡ Điện Lưới", f"{current_power:.2f} kW")
+    m3.metric("🌡️ Khí T4", f"{current_t4:.1f} °C")
+    m4.metric("🔋 Tích Lũy", f"{current_energy:.4f} kWh")
+
+def render_chart():
+    if not st.session_state.x_data:
+        return None
+    
+    x_vis = st.session_state.x_data[-20:]
+    y_fuel_vis = st.session_state.y_fuel[-20:]
+    y_power_vis = st.session_state.y_power[-20:]
+    y_t4_vis = st.session_state.y_t4[-20:]
+    y_energy_vis = st.session_state.y_energy[-20:]
+
+    fig = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.1)
+
+    fig.add_trace(go.Scatter(
+        x=x_vis,
+        y=y_fuel_vis,
+        mode='lines+markers',
+        name='Tải Rác',
+        line=dict(color='#f43f5e', width=2),
+        marker=dict(size=5, color='#f43f5e'),
+        customdata=list(zip(y_power_vis, y_t4_vis, y_energy_vis)),
+        hovertemplate="⏱ <b>T gian:</b> %{x}s<br>" +
+                      "🔥 <b>Rác nạp:</b> %{y:.1f} g/s<br>" +
+                      "⚡ <b>Điện lưới:</b> %{customdata[0]:.2f} kW<br>" +
+                      "🌡 <b>Khí T4:</b> %{customdata[1]:.1f} °C<br>" +
+                      "🔋 <b>Tích lũy:</b> %{customdata[2]:.4f} kWh<extra></extra>"
+    ), row=1, col=1)
+
+    fig.add_trace(go.Scatter(
+        x=x_vis,
+        y=y_power_vis,
+        mode='lines+markers',
+        name='Điện Lưới',
+        line=dict(color='#38bdf8', width=2),
+        marker=dict(size=5, color='#38bdf8'),
+        customdata=list(zip(y_fuel_vis, y_t4_vis, y_energy_vis)),
+        hovertemplate="⏱ <b>T gian:</b> %{x}s<br>" +
+                      "🔥 <b>Rác nạp:</b> %{customdata[0]:.1f} g/s<br>" +
+                      "⚡ <b>Điện lưới:</b> %{y:.2f} kW<br>" +
+                      "🌡 <b>Khí T4:</b> %{customdata[1]:.1f} °C<br>" +
+                      "🔋 <b>Tích lũy:</b> %{customdata[2]:.4f} kWh<extra></extra>"
+    ), row=2, col=1)
+
+    fig.update_layout(
+        paper_bgcolor='#0f172a',
+        plot_bgcolor='#1e293b',
+        font=dict(color='#cbd5e1', family="monospace"),
+        margin=dict(l=10, r=10, t=5, b=10),
+        height=320,
+        showlegend=False,
+        hovermode="closest",
+        hoverlabel=dict(
+            bgcolor="#1e293b",
+            bordercolor="#38bdf8",
+            font_size=11,
+            font_family="monospace"
+        )
+    )
+
+    fig.update_xaxes(gridcolor='#334155', showgrid=True, zeroline=False)
+    fig.update_yaxes(gridcolor='#334155', showgrid=True, zeroline=False)
+    fig.update_yaxes(title_text="Rác (g/s)", title_font=dict(color="#f43f5e", size=10), row=1, col=1)
+    fig.update_yaxes(title_text="Điện (kW)", title_font=dict(color="#38bdf8", size=10), row=2, col=1)
+    fig.update_xaxes(title_text="Thời gian (s)", title_font=dict(color="#cbd5e1", size=10), row=2, col=1)
+
+    return fig
+
+fig = render_chart()
+if fig:
+    chart_placeholder.plotly_chart(fig, use_container_width=True)
+
+# VÒNG LẶP MÔ PHỎNG VẬN HÀNH
+if st.session_state.running:
+    st.session_state.time_elapsed += 1
+    
+    fuel_g = st.session_state.base_fuel + random.uniform(-2.5, 2.5)
+    
+    m_fuel_sec = fuel_g / 1000.0
+    p_real, t4_real, _ = tinh_toan_nguoc_efgt(m_fuel_sec)
+    
+    st.session_state.total_energy_kwh += p_real / 3600.0
+    st.session_state.x_data.append(st.session_state.time_elapsed)
+    st.session_state.y_fuel.append(fuel_g)
+    st.session_state.y_power.append(p_real)
+    st.session_state.y_t4.append(t4_real)
+    st.session_state.y_energy.append(st.session_state.total_energy_kwh)
+
+    time.sleep(1)
+    st.rerun()
