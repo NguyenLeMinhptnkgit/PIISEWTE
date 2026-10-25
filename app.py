@@ -112,8 +112,8 @@ if 'base_fuel' not in st.session_state:
 # Tiêu đề chính
 st.markdown("<div class='main-title'>⚡ GIÁM SÁT ĐỒNG BỘ TOÀN DIỆN NHÀ MÁY ĐIỆN RÁC EFGT</div>", unsafe_allow_html=True)
 
-# BẢNG ĐIỀU KHIỂN & THANH KÉO TẢI RÁC
-col_ctrl1, col_ctrl2, col_slider = st.columns([1, 1, 3])
+# BẢNG ĐIỀU KHIỂN & Ô NHẬP GIÁ TRỊ TẢI RÁC
+col_ctrl1, col_ctrl2, col_input = st.columns([1, 1, 3])
 
 with col_ctrl1:
     if st.button("🚀 Bắt đầu / Dừng", use_container_width=True):
@@ -130,18 +130,19 @@ with col_ctrl2:
         st.session_state.total_energy_kwh = 0.0
         st.session_state.running = False
 
-with col_slider:
-    fuel_slider = st.slider(
-        "🔥 Lượng rác nạp đầu vào (g/s):",
-        min_value=50.0,
-        max_value=150.0,
+# THAY SLIDER BẰNG Ô NHẬP SỐ (ST.NUMBER_INPUT)
+with col_input:
+    fuel_input = st.number_input(
+        "🔥 Nhập lượng rác nạp (g/s):",
+        min_value=10.0,
+        max_value=300.0,
         value=float(st.session_state.base_fuel),
         step=1.0,
         disabled=st.session_state.running,
-        help="Chỉnh tham số khi dừng hệ thống"
+        help="Nhập số từ 10.0 đến 300.0 g/s khi hệ thống đang dừng"
     )
     if not st.session_state.running:
-        st.session_state.base_fuel = fuel_slider
+        st.session_state.base_fuel = fuel_input
 
 # HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
@@ -149,7 +150,7 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     flame_size = int(fuel_grams * 0.22) + 8 if is_running else 0
     
     flame_svg = f"""
-    <polygon points="290,{320 - flame_size} 270,320 310,320" fill="#f97316" stroke="#ef4444" stroke-width="1.5">
+    <polygon points="290,{325 - flame_size} 270,325 310,325" fill="#f97316" stroke="#ef4444" stroke-width="1.5">
         <animate attributeName="opacity" values="0.7;1;0.7" dur="0.3s" repeatCount="indefinite" />
     </polygon>
     """ if is_running else ""
@@ -229,7 +230,7 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
 # CHIA BỐ CỤC 2 CỘT
 col_left, col_right = st.columns([1, 1])
 
-# CẬP NHẬT GIÁ TRỊ THỰC TẾ KHI KÉO SLIDER LÚC HỆ THỐNG DỪNG VẬN HÀNH
+# CẬP NHẬT GIÁ TRỊ TỨC THÌ KHI THAY ĐỔI Ô NHẬP SỐ
 if not st.session_state.running:
     current_fuel = st.session_state.base_fuel
     p_calc, t4_calc, _ = tinh_toan_nguoc_efgt(current_fuel / 1000.0)
