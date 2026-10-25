@@ -143,16 +143,9 @@ with col_input:
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (CẬP NHẬT CHÍNH XÁC CÁC HUỚNG MŨI TÊN)
+# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (ĐÃ BỎ HÌNH TAM GIÁC & DỜI MŨI TÊN TRÁNH CHỮ TUABIN KHÍ)
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
-    flame_size = int(fuel_grams * 0.22) + 8 if is_running else 0
-    
-    flame_svg = f"""
-    <polygon points="290,{320 - flame_size} 270,320 310,320" fill="#f97316" stroke="#ef4444" stroke-width="1.5">
-        <animate attributeName="opacity" values="0.7;1;0.7" dur="0.3s" repeatCount="indefinite" />
-    </polygon>
-    """ if is_running else ""
 
     svg = f"""
     <svg viewBox="0 0 600 380" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background-color: #1e293b; border-radius: 10px; border: 1px solid #334155; padding: 5px;">
@@ -216,11 +209,11 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
       <!-- Đường ống TỪ Bộ HTHE Gián tiếp ĐI XUỐNG Máy nén khí -->
       <path d="M 225 140 L 170 140 L 170 190" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       
-      <!-- Đường ống TỪ Tuabin khí ĐI NGUỢC LÊN Bộ HTHE Gián tiếp -->
+      <!-- Đường ống TỪ Tuabin khí ĐI NGƯỢC LÊN Bộ HTHE Gián tiếp -->
       <path d="M 430 200 L 430 140 L 360 140" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       
-      <!-- Đường ống Tuabin -> Lò đốt -->
-      <path d="M 430 280 L 430 315 L 370 315" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
+      <!-- Đường ống Tuabin -> Lò đốt (Dời điểm đi xuống sang x=460 để không đè lên chữ Tuabin khí) -->
+      <path d="M 460 280 L 460 315 L 370 315" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       <text x="430" y="335" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Khí sạch nóng</text>
 
       <!-- Đường ống HTHE -> Lọc khí thải -->
@@ -229,8 +222,6 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
 
       <!-- Đường truyền nhiệt -->
       <line x1="290" y1="280" x2="290" y2="175" stroke="#fb923c" stroke-width="3" stroke-dasharray="5,5"/>
-
-      {flame_svg}
     </svg>
     """
     return svg
