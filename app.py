@@ -143,7 +143,7 @@ with col_input:
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (CẬP NHẬT HƯỚNG MŨI TÊN TỪ HTHE XUỐNG MÁY NÉN KHÍ)
+# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (CẬP NHẬT CHÍNH XÁC CÁC HUỚNG MŨI TÊN)
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
     flame_size = int(fuel_grams * 0.22) + 8 if is_running else 0
@@ -210,13 +210,14 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
       <line x1="210" y1="240" x2="390" y2="240" stroke="#f8fafc" stroke-width="4"/>
 
       <!-- 7. Đường ống & Mũi tên -->
+      <!-- Đường nạp khí đầu vào Máy nén -->
       <line x1="30" y1="240" x2="120" y2="240" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       
-      <!-- CẬP NHẬT: Mũi tên chỉ từ Bộ HTHE đi xuống Máy nén khí -->
+      <!-- Đường ống TỪ Bộ HTHE Gián tiếp ĐI XUỐNG Máy nén khí -->
       <path d="M 225 140 L 170 140 L 170 190" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       
-      <!-- Mũi tên chỉ từ Bộ HTHE đi xuống Tuabin khí -->
-      <path d="M 355 140 L 430 140 L 430 190" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
+      <!-- Đường ống TỪ Tuabin khí ĐI NGUỢC LÊN Bộ HTHE Gián tiếp -->
+      <path d="M 430 200 L 430 140 L 360 140" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       
       <!-- Đường ống Tuabin -> Lò đốt -->
       <path d="M 430 280 L 430 315 L 370 315" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
@@ -226,6 +227,7 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
       <path d="M 290 105 L 290 58 L 215 58" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       <text x="270" y="48" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Khói thải lò</text>
 
+      <!-- Đường truyền nhiệt -->
       <line x1="290" y1="280" x2="290" y2="175" stroke="#fb923c" stroke-width="3" stroke-dasharray="5,5"/>
 
       {flame_svg}
