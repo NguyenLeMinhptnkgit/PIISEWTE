@@ -143,7 +143,7 @@ with col_input:
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (ĐÃ BỎ HÌNH TAM GIÁC & DỜI MŨI TÊN TRÁNH CHỮ TUABIN KHÍ)
+# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
 
@@ -203,24 +203,15 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
       <line x1="210" y1="240" x2="390" y2="240" stroke="#f8fafc" stroke-width="4"/>
 
       <!-- 7. Đường ống & Mũi tên -->
-      <!-- Đường nạp khí đầu vào Máy nén -->
       <line x1="30" y1="240" x2="120" y2="240" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
-      
-      <!-- Đường ống TỪ Bộ HTHE Gián tiếp ĐI XUỐNG Máy nén khí -->
       <path d="M 225 140 L 170 140 L 170 190" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
-      
-      <!-- Đường ống TỪ Tuabin khí ĐI NGƯỢC LÊN Bộ HTHE Gián tiếp -->
       <path d="M 430 200 L 430 140 L 360 140" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
-      
-      <!-- Đường ống Tuabin -> Lò đốt (Dời điểm đi xuống sang x=460 để không đè lên chữ Tuabin khí) -->
       <path d="M 460 280 L 460 315 L 370 315" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       <text x="430" y="335" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Khí sạch nóng</text>
 
-      <!-- Đường ống HTHE -> Lọc khí thải -->
       <path d="M 290 105 L 290 58 L 215 58" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       <text x="270" y="48" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Khói thải lò</text>
 
-      <!-- Đường truyền nhiệt -->
       <line x1="290" y1="280" x2="290" y2="175" stroke="#fb923c" stroke-width="3" stroke-dasharray="5,5"/>
     </svg>
     """
@@ -266,11 +257,10 @@ def render_chart():
     x_vis = st.session_state.x_data[-20:]
     y_fuel_vis = st.session_state.y_fuel[-20:]
     y_power_vis = st.session_state.y_power[-20:]
-    y_t4_vis = st.session_state.y_t4[-20:]
-    y_energy_vis = st.session_state.y_energy[-20:]
 
     fig = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.1)
 
+    # Đồ thị 1: Tải Rác - Chỉ hiển thị mốc thời gian khi hover
     fig.add_trace(go.Scatter(
         x=x_vis,
         y=y_fuel_vis,
@@ -278,14 +268,10 @@ def render_chart():
         name='Tải Rác',
         line=dict(color='#f43f5e', width=2),
         marker=dict(size=5, color='#f43f5e'),
-        customdata=list(zip(y_power_vis, y_t4_vis, y_energy_vis)),
-        hovertemplate="⏱ <b>T gian:</b> %{x}s<br>" +
-                      "🔥 <b>Rác nạp:</b> %{y:.1f} g/s<br>" +
-                      "⚡ <b>Điện lưới:</b> %{customdata[0]:.2f} kW<br>" +
-                      "🌡 <b>Khí T4:</b> %{customdata[1]:.1f} °C<br>" +
-                      "🔋 <b>Tích lũy:</b> %{customdata[2]:.4f} kWh<extra></extra>"
+        hovertemplate="⏱ <b>T gian:</b> %{x}s<extra></extra>"
     ), row=1, col=1)
 
+    # Đồ thị 2: Điện Lưới - Chỉ hiển thị mốc thời gian khi hover
     fig.add_trace(go.Scatter(
         x=x_vis,
         y=y_power_vis,
@@ -293,12 +279,7 @@ def render_chart():
         name='Điện Lưới',
         line=dict(color='#38bdf8', width=2),
         marker=dict(size=5, color='#38bdf8'),
-        customdata=list(zip(y_fuel_vis, y_t4_vis, y_energy_vis)),
-        hovertemplate="⏱ <b>T gian:</b> %{x}s<br>" +
-                      "🔥 <b>Rác nạp:</b> %{customdata[0]:.1f} g/s<br>" +
-                      "⚡ <b>Điện lưới:</b> %{y:.2f} kW<br>" +
-                      "🌡 <b>Khí T4:</b> %{customdata[1]:.1f} °C<br>" +
-                      "🔋 <b>Tích lũy:</b> %{customdata[2]:.4f} kWh<extra></extra>"
+        hovertemplate="⏱ <b>T gian:</b> %{x}s<extra></extra>"
     ), row=2, col=1)
 
     fig.update_layout(
