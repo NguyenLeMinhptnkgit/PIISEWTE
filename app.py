@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- CSS TỐI ƯU GIAO DIỆN CANVA ---
+# --- CSS TỐI ƯU GIAO DIỆN & TẠO HỘP GIÁ TRỊ BO TRÒN NỔI BẬT ---
 st.markdown("""
 <style>
     .block-container {
@@ -29,12 +29,27 @@ st.markdown("""
         font-weight: bold;
         margin-bottom: 8px !important;
     }
+    
+    /* TẠO HỘP BO TRÒN VÀ VIỀN NỔI BẬT CHO 4 Ô GIÁ TRỊ */
+    [data-testid="stMetric"] {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+        border: 1.5px solid #38bdf8 !important;
+        border-radius: 10px !important;
+        padding: 8px 10px !important;
+        box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2) !important;
+        text-align: center !important;
+    }
     [data-testid="stMetricValue"] {
         font-size: 15px !important;
+        font-weight: bold !important;
+        color: #38bdf8 !important;
     }
     [data-testid="stMetricLabel"] {
         font-size: 11px !important;
+        font-weight: 600 !important;
+        color: #cbd5e1 !important;
     }
+    
     div.stButton > button {
         padding: 2px 10px !important;
         font-size: 12px !important;
@@ -97,7 +112,7 @@ if 'base_fuel' not in st.session_state:
 # Tiêu đề chính
 st.markdown("<div class='main-title'>⚡ GIÁM SÁT ĐỒNG BỘ TOÀN DIỆN NHÀ MÁY ĐIỆN RÁC EFGT</div>", unsafe_allow_html=True)
 
-# BAN ĐIỀU KHIỂN & THANH KÉO TẢI RÁC
+# BẢNG ĐIỀU KHIỂN & THANH KÉO TẢI RÁC
 col_ctrl1, col_ctrl2, col_slider = st.columns([1, 1, 3])
 
 with col_ctrl1:
@@ -123,12 +138,12 @@ with col_slider:
         value=float(st.session_state.base_fuel),
         step=1.0,
         disabled=st.session_state.running,
-        help="Chỉ có thể điều chỉnh khi hệ thống ĐANG TẮT"
+        help="Chỉnh tham số khi dừng hệ thống"
     )
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_slider
 
-# HÀM VẼ SƠ ĐỒ HỆ THỐNG MỚI (CHUẨN THEO ẢNH YÊU CẦU)
+# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
     flame_size = int(fuel_grams * 0.22) + 8 if is_running else 0
@@ -158,16 +173,16 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         </style>
       </defs>
 
-      <!-- 1. Hệ Thống lọc, thu giữ khí thải (Màu xanh lá) -->
+      <!-- 1. Hệ Thống lọc, thu giữ khí thải -->
       <rect x="25" y="25" width="180" height="65" fill="#bef264" stroke="#84cc16" stroke-width="2" rx="12"/>
       <text x="115" y="52" fill="#0f172a" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Hệ Thống lọc,</text>
       <text x="115" y="70" fill="#0f172a" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">thu giữ khí thải</text>
 
-      <!-- 2. Bộ HTHE Gián tiếp (Màu đỏ gạch) -->
+      <!-- 2. Bộ HTHE Gián tiếp -->
       <rect x="225" y="105" width="130" height="70" fill="#b91c1c" stroke="#ef4444" stroke-width="2" rx="10"/>
       <text x="290" y="146" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Bộ HTHE Gián tiếp</text>
 
-      <!-- 3. Máy nén khí (Khối đen bo góc + Dấu + trắng) -->
+      <!-- 3. Máy nén khí -->
       <rect x="130" y="200" width="80" height="80" fill="#000000" stroke="#475569" stroke-width="2" rx="18"/>
       <g transform="translate(170, 240)">
         <g class="{fan_class}">
@@ -177,7 +192,7 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
       </g>
       <text x="170" y="300" fill="#f8fafc" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Máy nén khí</text>
 
-      <!-- 4. Tuabin khí (Khối đen bo góc + Dấu + trắng) -->
+      <!-- 4. Tuabin khí -->
       <rect x="390" y="200" width="80" height="80" fill="#000000" stroke="#475569" stroke-width="2" rx="18"/>
       <g transform="translate(430, 240)">
         <g class="{fan_class}">
@@ -187,14 +202,14 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
       </g>
       <text x="430" y="300" fill="#f8fafc" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Tuabin khí</text>
 
-      <!-- 5. Lò đốt rác ngoài (Màu cam) -->
+      <!-- 5. Lò đốt rác ngoài -->
       <rect x="220" y="280" width="140" height="70" fill="#ea580c" stroke="#f97316" stroke-width="2" rx="10"/>
       <text x="290" y="321" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Lò đốt rác ngoài</text>
 
-      <!-- 6. Trục quay nối Máy nén và Tuabin -->
+      <!-- 6. Trục quay -->
       <line x1="210" y1="240" x2="390" y2="240" stroke="#f8fafc" stroke-width="4"/>
 
-      <!-- 7. Các đường ống dẫn khí & mũi tên -->
+      <!-- 7. Đường ống & Mũi tên -->
       <line x1="30" y1="240" x2="120" y2="240" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       <path d="M 170 200 L 170 140 L 215 140" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       <path d="M 355 140 L 430 140 L 430 190" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
@@ -204,7 +219,6 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
       <path d="M 290 105 L 290 58 L 215 58" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
       <text x="270" y="48" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Khói thải lò</text>
 
-      <!-- Đường truyền nhiệt từ lò đốt lên HTHE -->
       <line x1="290" y1="280" x2="290" y2="175" stroke="#fb923c" stroke-width="3" stroke-dasharray="5,5"/>
 
       {flame_svg}
@@ -215,12 +229,20 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
 # CHIA BỐ CỤC 2 CỘT
 col_left, col_right = st.columns([1, 1])
 
-current_fuel = st.session_state.y_fuel[-1] if st.session_state.y_fuel else st.session_state.base_fuel
-current_power = st.session_state.y_power[-1] if st.session_state.y_power else 0.0
-current_t4 = st.session_state.y_t4[-1] if st.session_state.y_t4 else 0.0
-current_energy = st.session_state.total_energy_kwh
+# CẬP NHẬT GIÁ TRỊ THỰC TẾ KHI KÉO SLIDER LÚC HỆ THỐNG DỪNG VẬN HÀNH
+if not st.session_state.running:
+    current_fuel = st.session_state.base_fuel
+    p_calc, t4_calc, _ = tinh_toan_nguoc_efgt(current_fuel / 1000.0)
+    current_power = p_calc
+    current_t4 = t4_calc
+    current_energy = st.session_state.total_energy_kwh
+else:
+    current_fuel = st.session_state.y_fuel[-1] if st.session_state.y_fuel else st.session_state.base_fuel
+    current_power = st.session_state.y_power[-1] if st.session_state.y_power else 0.0
+    current_t4 = st.session_state.y_t4[-1] if st.session_state.y_t4 else 0.0
+    current_energy = st.session_state.total_energy_kwh
 
-# --- CỘT TRÁI: SƠ ĐỒ ĐỘNG CƠ + CHỈ SỐ LED ---
+# --- CỘT TRÁI: SƠ ĐỒ ĐỘNG CƠ + 4 HỘP GIÁ TRỊ BO TRÒN ---
 with col_left:
     st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>⚙️ SƠ ĐỒ HỆ THỐNG EFGT</p>", unsafe_allow_html=True)
     svg_code = tao_so_do_svg_moi(st.session_state.running, current_fuel)
@@ -311,7 +333,6 @@ if fig:
 if st.session_state.running:
     st.session_state.time_elapsed += 1
     
-    # Tạo biến động nhẹ quanh mức rác đã cài đặt
     fuel_g = st.session_state.base_fuel + random.uniform(-2.5, 2.5)
     
     m_fuel_sec = fuel_g / 1000.0
