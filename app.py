@@ -220,35 +220,13 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
 # CHIA BỐ CỤC 2 CỘT
 col_left, col_right = st.columns([1, 1])
 
-if not st.session_state.running:
-    current_fuel = st.session_state.base_fuel
-    p_calc, t4_calc, _ = tinh_toan_nguoc_efgt(current_fuel / 1000.0)
-    current_power = p_calc
-    current_t4 = t4_calc
-    current_energy = st.session_state.total_energy_kwh
-else:
-    current_fuel = st.session_state.y_fuel[-1] if st.session_state.y_fuel else st.session_state.base_fuel
-    current_power = st.session_state.y_power[-1] if st.session_state.y_power else 0.0
-    current_t4 = st.session_state.y_t4[-1] if st.session_state.y_t4 else 0.0
-    current_energy = st.session_state.total_energy_kwh
+svg_fuel = st.session_state.y_fuel[-1] if (st.session_state.running and st.session_state.y_fuel) else st.session_state.base_fuel
 
 # --- CỘT TRÁI: SƠ ĐỒ HỆ THỐNG ---
 with col_left:
     st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>⚙️ SƠ ĐỒ HỆ THỐNG EFGT</p>", unsafe_allow_html=True)
-    svg_code = tao_so_do_svg_moi(st.session_state.running, current_fuel)
+    svg_code = tao_so_do_svg_moi(st.session_state.running, svg_fuel)
     st.markdown(svg_code, unsafe_allow_html=True)
-
-# --- CỘT PHẢI: BIỂU ĐỒ REAL-TIME & 4 HỘP GIÁ TRỊ METRIC BÊN DƯỚI ---
-with col_right:
-    st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>📊 BIỂU ĐỒ REAL-TIME</p>", unsafe_allow_html=True)
-    chart_placeholder = st.empty()
-
-    st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric("🔥 Rác Nạp", f"{current_fuel:.1f} g/s")
-    m2.metric("⚡ Điện Lưới", f"{current_power:.2f} kW")
-    m3.metric("🌡️ Khí T4", f"{current_t4:.1f} °C")
-    m4.metric("🔋 Tích Lũy", f"{current_energy:.4f} kWh")
 
 def render_chart():
     if not st.session_state.x_data:
@@ -260,7 +238,6 @@ def render_chart():
 
     fig = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.1)
 
-    # Đồ thị 1: Tải Rác - Chỉ hiển thị mốc thời gian khi hover
     fig.add_trace(go.Scatter(
         x=x_vis,
         y=y_fuel_vis,
@@ -271,7 +248,6 @@ def render_chart():
         hovertemplate="⏱ <b>T gian:</b> %{x}s<extra></extra>"
     ), row=1, col=1)
 
-    # Đồ thị 2: Điện Lưới - Chỉ hiển thị mốc thời gian khi hover
     fig.add_trace(go.Scatter(
         x=x_vis,
         y=y_power_vis,
@@ -306,9 +282,50 @@ def render_chart():
 
     return fig
 
-fig = render_chart()
-if fig:
-    chart_placeholder.plotly_chart(fig, use_container_width=True)
+# --- CỘT PHẢI: BIỂU ĐỒ REAL-TIME & 4 HỘP GIÁ TRỊ METRIC BÊN DƯỚI ---
+with col_right:
+    st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>📊 BIỂU ĐỒ REAL-TIME</p>", unsafe_allow_html=True)
+    fig = render_chart()
+    
+    selected_idx = None
+    if fig:
+        # Lắng nghe sự kiện click chọn điểm trên biểu đồ Plotly
+        event_data = st.plotly_chart(fig, on_select="rerun", selection_mode="points", use_container_width=True)
+        if event_data and "selection" in event_data:
+            pts = event_data["selection"].get("points", [])
+            if pts:
+                target_x = pts[0].get("x")
+                if target_x in st.session_state.x_data:
+                    selected_idx = st.session_state.x_data.index(target_x)
+
+    # 1. Nếu người dùng ĐANG CLICK vào 1 điểm trên biểu đồ
+    if selected_idx is not None:
+        current_fuel = st.session_state.y_fuel[selected_idx]
+        current_power = st.session_state.y_power[selected_idx]
+        current_t4 = st.session_state.y_t4[selected_idx]
+        current_energy = st.session_state.y_energy[selected_idx]
+
+    # 2. Nếu KHÔNG CLICK và ĐÃ CÓ DỮ LIỆU (Thời gian > 0, chưa Reset) -> Hiện mốc gần đây nhất
+    elif len(st.session_state.x_data) > 0:
+        current_fuel = st.session_state.y_fuel[-1]
+        current_power = st.session_state.y_power[-1]
+        current_t4 = st.session_state.y_t4[-1]
+        current_energy = st.session_state.y_energy[-1]
+
+    # 3. Khi Thời gian = 0 (Chưa chạy hoặc vừa bấm Reset)
+    else:
+        current_fuel = st.session_state.base_fuel
+        p_calc, t4_calc, _ = tinh_toan_nguoc_efgt(current_fuel / 1000.0)
+        current_power = p_calc
+        current_t4 = t4_calc
+        current_energy = st.session_state.total_energy_kwh
+
+    st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("🔥 Rác Nạp", f"{current_fuel:.1f} g/s")
+    m2.metric("⚡ Điện Lưới", f"{current_power:.2f} kW")
+    m3.metric("🌡️ Khí T4", f"{current_t4:.1f} °C")
+    m4.metric("🔋 Tích Lũy", f"{current_energy:.4f} kWh")
 
 # VÒNG LẶP MÔ PHỎNG VẬN HÀNH
 if st.session_state.running:
