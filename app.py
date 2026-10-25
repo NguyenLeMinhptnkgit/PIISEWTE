@@ -289,7 +289,6 @@ with col_right:
     
     selected_idx = None
     if fig:
-        # Lắng nghe sự kiện click chọn điểm trên biểu đồ Plotly
         event_data = st.plotly_chart(fig, on_select="rerun", selection_mode="points", use_container_width=True)
         if event_data and "selection" in event_data:
             pts = event_data["selection"].get("points", [])
@@ -298,21 +297,18 @@ with col_right:
                 if target_x in st.session_state.x_data:
                     selected_idx = st.session_state.x_data.index(target_x)
 
-    # 1. Nếu người dùng ĐANG CLICK vào 1 điểm trên biểu đồ
     if selected_idx is not None:
         current_fuel = st.session_state.y_fuel[selected_idx]
         current_power = st.session_state.y_power[selected_idx]
         current_t4 = st.session_state.y_t4[selected_idx]
         current_energy = st.session_state.y_energy[selected_idx]
 
-    # 2. Nếu KHÔNG CLICK và ĐÃ CÓ DỮ LIỆU (Thời gian > 0, chưa Reset) -> Hiện mốc gần đây nhất
     elif len(st.session_state.x_data) > 0:
         current_fuel = st.session_state.y_fuel[-1]
         current_power = st.session_state.y_power[-1]
         current_t4 = st.session_state.y_t4[-1]
         current_energy = st.session_state.y_energy[-1]
 
-    # 3. Khi Thời gian = 0 (Chưa chạy hoặc vừa bấm Reset)
     else:
         current_fuel = st.session_state.base_fuel
         p_calc, t4_calc, _ = tinh_toan_nguoc_efgt(current_fuel / 1000.0)
@@ -324,7 +320,7 @@ with col_right:
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("🔥 Rác Nạp", f"{current_fuel:.1f} g/s")
     m2.metric("⚡ Điện Lưới", f"{current_power:.2f} kW")
-    m3.metric("🌡️ Khí T4", f"{current_t4:.1f} °C")
+    m3.metric("🌡️ Nhiệt Độ Khí", f"{current_t4:.1f} °C")
     m4.metric("🔋 Tích Lũy", f"{current_energy:.4f} kWh")
 
 # VÒNG LẶP MÔ PHỎNG VẬN HÀNH
