@@ -143,44 +143,16 @@ with col_input:
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (TẠO NGỌN LỬA NHIỀU CHÓP BÙNG CHÁY TRÊN NÓC LÒ ĐỐT)
+# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (QUAY LẠI NGỌN LỬA TAM GIÁC ĐƠN TRUYỀN THỐNG)
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
-    flame_height = min(max(int(fuel_grams * 0.12), 12), 32) if is_running else 0
+    flame_size = int(fuel_grams * 0.22) + 8 if is_running else 0
     
-    if is_running:
-        y_top_1 = 280 - flame_height
-        y_top_2 = 280 - int(flame_height * 1.35)
-        y_top_3 = 280 - int(flame_height * 0.95)
-        
-        flame_svg = f"""
-        <path d="M 220 280 
-                 L 228 {y_top_1} L 236 280 
-                 L 245 {y_top_2} L 254 280 
-                 L 263 {y_top_3} L 272 280 
-                 L 281 {y_top_2} L 290 280 
-                 L 299 {y_top_1} L 308 280 
-                 L 317 {y_top_2} L 326 280 
-                 L 335 {y_top_3} L 344 280 
-                 L 352 {y_top_1} L 360 280 Z" 
-              fill="#ef4444" stroke="#f97316" stroke-width="2">
-            <animate attributeName="opacity" values="0.75;1;0.75" dur="0.25s" repeatCount="indefinite" />
-        </path>
-        <path d="M 225 280 
-                 L 233 {y_top_1 + 4} L 241 280 
-                 L 250 {y_top_2 + 5} L 259 280 
-                 L 268 {y_top_3 + 3} L 277 280 
-                 L 286 {y_top_2 + 6} L 295 280 
-                 L 304 {y_top_1 + 4} L 313 280 
-                 L 322 {y_top_2 + 5} L 331 280 
-                 L 340 {y_top_3 + 3} L 349 280 
-                 L 355 280 Z" 
-              fill="#f97316">
-            <animate attributeName="opacity" values="1;0.7;1" dur="0.2s" repeatCount="indefinite" />
-        </path>
-        """
-    else:
-        flame_svg = ""
+    flame_svg = f"""
+    <polygon points="290,{320 - flame_size} 270,320 310,320" fill="#f97316" stroke="#ef4444" stroke-width="1.5">
+        <animate attributeName="opacity" values="0.7;1;0.7" dur="0.3s" repeatCount="indefinite" />
+    </polygon>
+    """ if is_running else ""
 
     svg = f"""
     <svg viewBox="0 0 600 380" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background-color: #1e293b; border-radius: 10px; border: 1px solid #334155; padding: 5px;">
@@ -254,7 +226,7 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     """
     return svg
 
-# CHIA BỐ CỤC 2 CỘT (CỘT TRÁI: SƠ ĐỒ; CỘT PHẢI: BIỂU ĐỒ + 4 Ô GIÁ TRỊ)
+# CHIA BỐ CỤC 2 CỘT
 col_left, col_right = st.columns([1, 1])
 
 if not st.session_state.running:
@@ -262,116 +234,4 @@ if not st.session_state.running:
     p_calc, t4_calc, _ = tinh_toan_nguoc_efgt(current_fuel / 1000.0)
     current_power = p_calc
     current_t4 = t4_calc
-    current_energy = st.session_state.total_energy_kwh
-else:
-    current_fuel = st.session_state.y_fuel[-1] if st.session_state.y_fuel else st.session_state.base_fuel
-    current_power = st.session_state.y_power[-1] if st.session_state.y_power else 0.0
-    current_t4 = st.session_state.y_t4[-1] if st.session_state.y_t4 else 0.0
-    current_energy = st.session_state.total_energy_kwh
-
-# --- CỘT TRÁI: SƠ ĐỒ HỆ THỐNG ---
-with col_left:
-    st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>⚙️ SƠ ĐỒ HỆ THỐNG EFGT</p>", unsafe_allow_html=True)
-    svg_code = tao_so_do_svg_moi(st.session_state.running, current_fuel)
-    st.markdown(svg_code, unsafe_allow_html=True)
-
-# --- CỘT PHẢI: BIỂU ĐỒ REAL-TIME & 4 HỘP GIÁ TRỊ ĐẶT Ở DƯỚI (VỊ TRÍ DẤU X) ---
-with col_right:
-    st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>📊 BIỂU ĐỒ REAL-TIME</p>", unsafe_allow_html=True)
-    chart_placeholder = st.empty()
-
-    st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric("🔥 Rác Nạp", f"{current_fuel:.1f} g/s")
-    m2.metric("⚡ Điện Lưới", f"{current_power:.2f} kW")
-    m3.metric("🌡️ Khí T4", f"{current_t4:.1f} °C")
-    m4.metric("🔋 Tích Lũy", f"{current_energy:.4f} kWh")
-
-def render_chart():
-    if not st.session_state.x_data:
-        return None
-    
-    x_vis = st.session_state.x_data[-20:]
-    y_fuel_vis = st.session_state.y_fuel[-20:]
-    y_power_vis = st.session_state.y_power[-20:]
-    y_t4_vis = st.session_state.y_t4[-20:]
-    y_energy_vis = st.session_state.y_energy[-20:]
-
-    fig = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.1)
-
-    fig.add_trace(go.Scatter(
-        x=x_vis,
-        y=y_fuel_vis,
-        mode='lines+markers',
-        name='Tải Rác',
-        line=dict(color='#f43f5e', width=2),
-        marker=dict(size=5, color='#f43f5e'),
-        customdata=list(zip(y_power_vis, y_t4_vis, y_energy_vis)),
-        hovertemplate="⏱ <b>T gian:</b> %{x}s<br>" +
-                      "🔥 <b>Rác nạp:</b> %{y:.1f} g/s<br>" +
-                      "⚡ <b>Điện lưới:</b> %{customdata[0]:.2f} kW<br>" +
-                      "🌡 <b>Khí T4:</b> %{customdata[1]:.1f} °C<br>" +
-                      "🔋 <b>Tích lũy:</b> %{customdata[2]:.4f} kWh<extra></extra>"
-    ), row=1, col=1)
-
-    fig.add_trace(go.Scatter(
-        x=x_vis,
-        y=y_power_vis,
-        mode='lines+markers',
-        name='Điện Lưới',
-        line=dict(color='#38bdf8', width=2),
-        marker=dict(size=5, color='#38bdf8'),
-        customdata=list(zip(y_fuel_vis, y_t4_vis, y_energy_vis)),
-        hovertemplate="⏱ <b>T gian:</b> %{x}s<br>" +
-                      "🔥 <b>Rác nạp:</b> %{customdata[0]:.1f} g/s<br>" +
-                      "⚡ <b>Điện lưới:</b> %{y:.2f} kW<br>" +
-                      "🌡 <b>Khí T4:</b> %{customdata[1]:.1f} °C<br>" +
-                      "🔋 <b>Tích lũy:</b> %{customdata[2]:.4f} kWh<extra></extra>"
-    ), row=2, col=1)
-
-    fig.update_layout(
-        paper_bgcolor='#0f172a',
-        plot_bgcolor='#1e293b',
-        font=dict(color='#cbd5e1', family="monospace"),
-        margin=dict(l=10, r=10, t=5, b=10),
-        height=320,
-        showlegend=False,
-        hovermode="closest",
-        hoverlabel=dict(
-            bgcolor="#1e293b",
-            bordercolor="#38bdf8",
-            font_size=11,
-            font_family="monospace"
-        )
-    )
-
-    fig.update_xaxes(gridcolor='#334155', showgrid=True, zeroline=False)
-    fig.update_yaxes(gridcolor='#334155', showgrid=True, zeroline=False)
-    fig.update_yaxes(title_text="Rác (g/s)", title_font=dict(color="#f43f5e", size=10), row=1, col=1)
-    fig.update_yaxes(title_text="Điện (kW)", title_font=dict(color="#38bdf8", size=10), row=2, col=1)
-    fig.update_xaxes(title_text="Thời gian (s)", title_font=dict(color="#cbd5e1", size=10), row=2, col=1)
-
-    return fig
-
-fig = render_chart()
-if fig:
-    chart_placeholder.plotly_chart(fig, use_container_width=True)
-
-# VÒNG LẶP MÔ PHỎNG VẬN HÀNH
-if st.session_state.running:
-    st.session_state.time_elapsed += 1
-    
-    fuel_g = st.session_state.base_fuel + random.uniform(-2.5, 2.5)
-    
-    m_fuel_sec = fuel_g / 1000.0
-    p_real, t4_real, _ = tinh_toan_nguoc_efgt(m_fuel_sec)
-    
-    st.session_state.total_energy_kwh += p_real / 3600.0
-    st.session_state.x_data.append(st.session_state.time_elapsed)
-    st.session_state.y_fuel.append(fuel_g)
-    st.session_state.y_power.append(p_real)
-    st.session_state.y_t4.append(t4_real)
-    st.session_state.y_energy.append(st.session_state.total_energy_kwh)
-
-    time.sleep(1)
-    st.rerun()
+    current_energy =
