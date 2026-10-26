@@ -137,23 +137,23 @@ with col_input:
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG MỚI (KHÔNG CÓ SỐ (1)-(9), CẬP NHẬT TUYẾN ĐIỆN VỀ MÁY NÉN)
+# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (ĐÃ KHẮC PHỤC LỖI HIỂN THỊ MÃ THUẦN)
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
 
     svg = f"""
     <svg viewBox="0 0 760 420" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background-color: #1e293b; border-radius: 10px; border: 1px solid #334155; padding: 5px;">
       <defs>
-        <marker id="arrow-black" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#000000" stroke="#ffffff" stroke-width="0.5"/>
+        <marker id="arrow-white" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffffff"/>
         </marker>
-        <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <marker id="arrow-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="#bef264"/>
         </marker>
-        <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <marker id="arrow-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="#d8b4fe"/>
         </marker>
-        <marker id="arrow-orange" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <marker id="arrow-orange" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="#ea580c"/>
         </marker>
         <style>
@@ -171,16 +171,16 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
 
       <!-- CHÚ GIẢI (LEGEND) -->
       <g transform="translate(10, 8)">
-        <line x1="5" y1="12" x2="40" y2="12" stroke="#000000" stroke-width="4" marker-end="url(#arrow-black)"/>
+        <line x1="5" y1="12" x2="40" y2="12" stroke="#ffffff" stroke-width="3" marker-end="url(#arrow-white)"/>
         <text x="50" y="16" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Hướng đi của dòng điện</text>
 
-        <line x1="5" y1="32" x2="40" y2="32" stroke="#bef264" stroke-width="4" marker-end="url(#arrow-green)"/>
+        <line x1="5" y1="32" x2="40" y2="32" stroke="#bef264" stroke-width="3" marker-end="url(#arrow-green)"/>
         <text x="50" y="36" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Hướng đi của luồng khí thải</text>
 
-        <line x1="5" y1="52" x2="40" y2="52" stroke="#d8b4fe" stroke-width="4" marker-end="url(#arrow-purple)"/>
+        <line x1="5" y1="52" x2="40" y2="52" stroke="#d8b4fe" stroke-width="3" marker-end="url(#arrow-purple)"/>
         <text x="50" y="56" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Hướng đi của luồng khí sạch</text>
 
-        <line x1="5" y1="72" x2="40" y2="72" stroke="#ea580c" stroke-width="4" marker-end="url(#arrow-orange)"/>
+        <line x1="5" y1="72" x2="40" y2="72" stroke="#ea580c" stroke-width="3" marker-end="url(#arrow-orange)"/>
         <text x="50" y="76" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Hướng đi của nhiệt từ lò đốt</text>
       </g>
 
@@ -218,17 +218,17 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
 
       <!-- ĐƯỜNG MŨI TÊN KẾT NỐI -->
       <!-- Khí sạch tím nạp vào Máy nén -->
-      <line x1="140" y1="227.5" x2="222" y2="227.5" stroke="#d8b4fe" stroke-width="6" marker-end="url(#arrow-purple)"/>
+      <line x1="140" y1="227.5" x2="222" y2="227.5" stroke="#d8b4fe" stroke-width="5" marker-end="url(#arrow-purple)"/>
 
       <!-- Khí sạch tím từ Máy nén sang Tuabin -->
-      <line x1="305" y1="227.5" x2="532" y2="227.5" stroke="#d8b4fe" stroke-width="6" marker-end="url(#arrow-purple)"/>
+      <line x1="305" y1="227.5" x2="532" y2="227.5" stroke="#d8b4fe" stroke-width="5" marker-end="url(#arrow-purple)"/>
 
       <!-- Khí sạch nóng tím từ Tuabin xuống Lò đốt -->
-      <path d="M 577.5 265 L 577.5 352.5 L 498 352.5" fill="none" stroke="#d8b4fe" stroke-width="6" marker-end="url(#arrow-purple)"/>
+      <path d="M 577.5 265 L 577.5 352.5 L 498 352.5" fill="none" stroke="#d8b4fe" stroke-width="5" marker-end="url(#arrow-purple)"/>
       <text x="577.5" y="380" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Khí sạch nóng</text>
 
       <!-- Nhiệt làm nóng khí (Cam) từ Lò đốt chỉ lên đường khí sạch -->
-      <line x1="455" y1="320" x2="455" y2="237" stroke="#ea580c" stroke-width="5" marker-end="url(#arrow-orange)"/>
+      <line x1="455" y1="320" x2="455" y2="237" stroke="#ea580c" stroke-width="4" marker-end="url(#arrow-orange)"/>
       <text x="495" y="270" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Nhiệt làm</text>
       <text x="495" y="286" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">nóng khí</text>
 
@@ -236,15 +236,15 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
       <line x1="415" y1="320" x2="415" y2="163" stroke="#ea580c" stroke-width="4" stroke-dasharray="6,4" marker-end="url(#arrow-orange)"/>
       <text x="375" y="278" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Nhiệt dư</text>
 
-      <!-- Đường dòng điện (Đen) từ Tuabin lên Output -->
-      <line x1="577.5" y1="190" x2="577.5" y2="83" stroke="#000000" stroke-width="3" marker-end="url(#arrow-black)"/>
-      <text x="585" y="140" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Động năng--&gt; Điện năng</text>
+      <!-- Đường dòng điện (Trắng) từ Tuabin lên Output -->
+      <line x1="577.5" y1="190" x2="577.5" y2="83" stroke="#ffffff" stroke-width="3" marker-end="url(#arrow-white)"/>
+      <text x="585" y="140" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Động năng sang Điện năng</text>
 
-      <!-- Đường dòng điện (Đen) từ Output vòng về Máy nén khí -->
-      <path d="M 520 45 L 267.5 45 L 267.5 182" fill="none" stroke="#000000" stroke-width="3" marker-end="url(#arrow-black)"/>
+      <!-- Đường dòng điện (Trắng) từ Output vòng về Máy nén khí -->
+      <path d="M 520 45 L 267.5 45 L 267.5 182" fill="none" stroke="#ffffff" stroke-width="3" marker-end="url(#arrow-white)"/>
 
-      <!-- Đường dòng điện (Đen) từ HTHE nối vào tuyến điện Máy nén -->
-      <path d="M 330 122.5 L 267.5 122.5" fill="none" stroke="#000000" stroke-width="3"/>
+      <!-- Đường dòng điện (Trắng) từ HTHE nối vào tuyến điện Máy nén -->
+      <path d="M 330 122.5 L 267.5 122.5" fill="none" stroke="#ffffff" stroke-width="3"/>
 
       <!-- Khói thải lò (Xanh lá) từ Lò đốt sang Hệ thống lọc -->
       <line x1="340" y1="355" x2="193" y2="355" stroke="#bef264" stroke-width="4" marker-end="url(#arrow-green)"/>
