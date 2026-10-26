@@ -142,7 +142,7 @@ with col_input:
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# --- HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (ĐÃ KHẮC PHỤC LỖI MARKDOWN & ĐÈ CHỮ) ---
+# --- HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (ĐÃ SỬA CHUẨN MŨI TÊN TRẮNG VÀ TÍM) ---
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
 
@@ -173,7 +173,7 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<text x="40" y="80" class="legend-text">Hướng đi của nhiệt từ lò đốt</text>',
         '</g>',
 
-        '<!-- 1. KHỐI OUTPUT (GÓC TRÊN PHẢI) -->',
+        '<!-- 1. KHỐI OUTPUT -->',
         '<rect x="560" y="20" width="160" height="50" fill="#991b1b" stroke="#ef4444" stroke-width="2" rx="10"/>',
         '<text x="640" y="52" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold" text-anchor="middle">Output</text>',
 
@@ -206,17 +206,19 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<text x="110" y="415" fill="#0f172a" class="text-node" text-anchor="middle">Hệ Thống lọc,</text>',
         '<text x="110" y="433" fill="#0f172a" class="text-node" text-anchor="middle">thu giữ khí thải</text>',
 
-        '<!-- A. DÒNG ĐIỆN (MÀU TRẮNG) -->',
-        '<path d="M 577.5 220 L 577.5 70" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
+        '<!-- A. DÒNG ĐIỆN (MÀU TRẮNG): Tuabin -> Output, Output & HTHE -> Máy nén khí -->',
+        '<path d="M 577.5 220 L 577.5 75" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
         '<text x="590" y="145" fill="#f8fafc" font-size="11" font-weight="bold" font-family="sans-serif">Động năng &#8594; Điện năng</text>',
         '<path d="M 560 45 L 217.5 45 L 217.5 210" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
-        '<path d="M 400 45 L 400 100" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
+        '<!-- Đường trắng xuất phát từ Bộ HTHE Gián tiếp nối lên đường chính tới Máy nén khí -->',
+        '<path d="M 370 110 L 370 45" fill="none" stroke="#f8fafc" stroke-width="3"/>',
 
         '<!-- B. LUỒNG KHÍ SẠCH (MÀU TÍM) -->',
         '<line x1="80" y1="257.5" x2="170" y2="257.5" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
         '<line x1="255" y1="257.5" x2="530" y2="257.5" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
-        '<path d="M 577.5 295 L 577.5 455 L 490 455" fill="none" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
-        '<text x="535" y="475" fill="#c084fc" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">Khí sạch nóng</text>',
+        '<!-- Mũi tên tím đi từ Tuabin chuẩn tâm vào cạnh phải Lò đốt rác ngoài (x=498, y=417.5) -->',
+        '<path d="M 577.5 295 L 577.5 417.5 L 498 417.5" fill="none" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
+        '<text x="535" y="438" fill="#c084fc" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">Khí sạch nóng</text>',
 
         '<!-- C. NHIỆT TỪ LÒ ĐỐT (MÀU CAM) -->',
         '<line x1="360" y1="390" x2="360" y2="173" stroke="#ea580c" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arr-orange)"/>',
@@ -231,7 +233,6 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '</svg>'
     ]
 
-    # Gộp tất cả các dòng thành một chuỗi duy nhất không có xuống dòng để không làm vỡ Markdown của Streamlit
     return "".join(svg_lines)
 
 # CHIA BỐ CỤC 2 CỘT
