@@ -142,124 +142,97 @@ with col_input:
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# --- HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG ĐÃ CÂN CHỈNH TỌA ĐỘ CHỮ ---
+# --- HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (ĐÃ KHẮC PHỤC LỖI MARKDOWN & ĐÈ CHỮ) ---
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
 
-    svg = f"""<svg viewBox="0 0 750 460" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background-color: #0f172a; border-radius: 10px; border: 1px solid #334155; padding: 5px;">
-  <defs>
-    <marker id="arr-black" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f8fafc"/>
-    </marker>
-    <marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#c084fc"/>
-    </marker>
-    <marker id="arr-orange" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#ea580c"/>
-    </marker>
-    <marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#bef264"/>
-    </marker>
-    <style>
-      @keyframes spin {{
-        from {{ transform: rotate(0deg); }}
-        to {{ transform: rotate(360deg); }}
-      }}
-      .fan-spinning {{
-        transform-origin: center;
-        transform-box: fill-box;
-        animation: spin 0.6s linear infinite;
-      }}
-      .text-node {{
-        font-family: sans-serif;
-        font-size: 13px;
-        font-weight: bold;
-      }}
-      .legend-text {{
-        font-family: sans-serif;
-        font-size: 11px;
-        font-weight: 600;
-        fill: #e2e8f0;
-      }}
-    </style>
-  </defs>
+    svg_lines = [
+        '<svg viewBox="0 0 800 500" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background-color: #0f172a; border-radius: 10px; border: 1px solid #334155; padding: 5px;">',
+        '<defs>',
+        '<marker id="arr-black" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f8fafc"/></marker>',
+        '<marker id="arr-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#c084fc"/></marker>',
+        '<marker id="arr-orange" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#ea580c"/></marker>',
+        '<marker id="arr-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#bef264"/></marker>',
+        '<style>',
+        '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }',
+        f'.fan-spinning {{ transform-origin: center; transform-box: fill-box; animation: spin 0.6s linear infinite; }}',
+        '.text-node { font-family: sans-serif; font-size: 13px; font-weight: bold; }',
+        '.legend-text { font-family: sans-serif; font-size: 11px; font-weight: 600; fill: #e2e8f0; }',
+        '</style>',
+        '</defs>',
 
-  <!-- BẢNG CHÚ GIẢI GÓC TRÊN TRÁI -->
-  <g transform="translate(15, 15)">
-    <line x1="0" y1="10" x2="30" y2="10" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>
-    <text x="40" y="14" class="legend-text">Hướng đi của dòng điện</text>
+        '<!-- CHÚ GIẢI GÓC TRÊN TRÁI -->',
+        '<g transform="translate(20, 20)">',
+        '<line x1="0" y1="10" x2="30" y2="10" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
+        '<text x="40" y="14" class="legend-text">Hướng đi của dòng điện</text>',
+        '<line x1="0" y1="32" x2="30" y2="32" stroke="#bef264" stroke-width="3" marker-end="url(#arr-green)"/>',
+        '<text x="40" y="36" class="legend-text">Hướng đi của luồng khí thải</text>',
+        '<line x1="0" y1="54" x2="30" y2="54" stroke="#c084fc" stroke-width="3" marker-end="url(#arr-purple)"/>',
+        '<text x="40" y="58" class="legend-text">Hướng đi của luồng khí sạch</text>',
+        '<line x1="0" y1="76" x2="30" y2="76" stroke="#ea580c" stroke-width="3" marker-end="url(#arr-orange)"/>',
+        '<text x="40" y="80" class="legend-text">Hướng đi của nhiệt từ lò đốt</text>',
+        '</g>',
 
-    <line x1="0" y1="32" x2="30" y2="32" stroke="#bef264" stroke-width="3" marker-end="url(#arr-green)"/>
-    <text x="40" y="36" class="legend-text">Hướng đi của luồng khí thải</text>
+        '<!-- 1. KHỐI OUTPUT (GÓC TRÊN PHẢI) -->',
+        '<rect x="560" y="20" width="160" height="50" fill="#991b1b" stroke="#ef4444" stroke-width="2" rx="10"/>',
+        '<text x="640" y="52" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold" text-anchor="middle">Output</text>',
 
-    <line x1="0" y1="54" x2="30" y2="54" stroke="#c084fc" stroke-width="3" marker-end="url(#arr-purple)"/>
-    <text x="40" y="58" class="legend-text">Hướng đi của luồng khí sạch</text>
+        '<!-- 2. BỘ HTHE GIÁN TIẾP -->',
+        '<rect x="320" y="110" width="160" height="55" fill="#991b1b" stroke="#ef4444" stroke-width="2" rx="10"/>',
+        '<text x="400" y="143" fill="#ffffff" class="text-node" text-anchor="middle">Bộ HTHE Gián tiếp</text>',
 
-    <line x1="0" y1="76" x2="30" y2="76" stroke="#ea580c" stroke-width="3" marker-end="url(#arr-orange)"/>
-    <text x="40" y="80" class="legend-text">Hướng đi của nhiệt từ lò đốt</text>
-  </g>
+        '<!-- 3. MÁY NÉN KHÍ -->',
+        '<rect x="180" y="220" width="75" height="75" fill="#000000" stroke="#64748b" stroke-width="2" rx="15"/>',
+        f'<g transform="translate(217.5, 257.5)"><g class="{fan_class}">',
+        '<line x1="-18" y1="0" x2="18" y2="0" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>',
+        '<line x1="0" y1="-18" x2="0" y2="18" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>',
+        '</g></g>',
+        '<text x="217.5" y="315" fill="#f8fafc" class="text-node" text-anchor="middle">Máy nén khí</text>',
 
-  <!-- 1. KHỐI OUTPUT -->
-  <rect x="520" y="20" width="160" height="50" fill="#991b1b" stroke="#ef4444" stroke-width="2" rx="10"/>
-  <text x="600" y="52" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold" text-anchor="middle">Output</text>
+        '<!-- 4. TUABIN KHÍ -->',
+        '<rect x="540" y="220" width="75" height="75" fill="#000000" stroke="#64748b" stroke-width="2" rx="15"/>',
+        f'<g transform="translate(577.5, 257.5)"><g class="{fan_class}">',
+        '<line x1="-18" y1="0" x2="18" y2="0" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>',
+        '<line x1="0" y1="-18" x2="0" y2="18" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>',
+        '</g></g>',
+        '<text x="630" y="262" fill="#f8fafc" class="text-node" text-anchor="start">Tuabin khí</text>',
 
-  <!-- 2. BỘ HTHE GIÁN TIẾP -->
-  <rect x="310" y="110" width="160" height="55" fill="#991b1b" stroke="#ef4444" stroke-width="2" rx="10"/>
-  <text x="390" y="143" fill="#ffffff" class="text-node" text-anchor="middle">Bộ HTHE Gián tiếp</text>
+        '<!-- 5. LÒ ĐỐT RÁC NGOÀI -->',
+        '<rect x="310" y="390" width="180" height="55" fill="#ea580c" stroke="#fb923c" stroke-width="2" rx="10"/>',
+        '<text x="400" y="423" fill="#ffffff" class="text-node" text-anchor="middle">Lò đốt rác ngoài</text>',
 
-  <!-- 3. MÁY NÉN KHÍ -->
-  <rect x="190" y="210" width="70" height="70" fill="#000000" stroke="#64748b" stroke-width="2" rx="15"/>
-  <g transform="translate(225, 245)">
-    <g class="{fan_class}">
-      <line x1="-18" y1="0" x2="18" y2="0" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-      <line x1="0" y1="-18" x2="0" y2="18" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-    </g>
-  </g>
-  <text x="225" y="300" fill="#f8fafc" class="text-node" text-anchor="middle">Máy nén khí</text>
+        '<!-- 6. HỆ THỐNG LỌC KHÍ THẢI -->',
+        '<rect x="20" y="390" width="180" height="55" fill="#bef264" stroke="#84cc16" stroke-width="2" rx="10"/>',
+        '<text x="110" y="415" fill="#0f172a" class="text-node" text-anchor="middle">Hệ Thống lọc,</text>',
+        '<text x="110" y="433" fill="#0f172a" class="text-node" text-anchor="middle">thu giữ khí thải</text>',
 
-  <!-- 4. TUABIN KHÍ (ĐẶT TÊN BÊN PHẢI KHỐI) -->
-  <rect x="540" y="210" width="70" height="70" fill="#000000" stroke="#64748b" stroke-width="2" rx="15"/>
-  <g transform="translate(575, 245)">
-    <g class="{fan_class}">
-      <line x1="-18" y1="0" x2="18" y2="0" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-      <line x1="0" y1="-18" x2="0" y2="18" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-    </g>
-  </g>
-  <text x="622" y="250" fill="#f8fafc" class="text-node" text-anchor="start">Tuabin khí</text>
+        '<!-- A. DÒNG ĐIỆN (MÀU TRẮNG) -->',
+        '<path d="M 577.5 220 L 577.5 70" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
+        '<text x="590" y="145" fill="#f8fafc" font-size="11" font-weight="bold" font-family="sans-serif">Động năng &#8594; Điện năng</text>',
+        '<path d="M 560 45 L 217.5 45 L 217.5 210" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
+        '<path d="M 400 45 L 400 100" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
 
-  <!-- 5. LÒ ĐỐT RÁC NGOÀI -->
-  <rect x="300" y="360" width="170" height="55" fill="#ea580c" stroke="#fb923c" stroke-width="2" rx="10"/>
-  <text x="385" y="393" fill="#ffffff" class="text-node" text-anchor="middle">Lò đốt rác ngoài</text>
+        '<!-- B. LUỒNG KHÍ SẠCH (MÀU TÍM) -->',
+        '<line x1="80" y1="257.5" x2="170" y2="257.5" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
+        '<line x1="255" y1="257.5" x2="530" y2="257.5" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
+        '<path d="M 577.5 295 L 577.5 455 L 490 455" fill="none" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
+        '<text x="535" y="475" fill="#c084fc" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">Khí sạch nóng</text>',
 
-  <!-- 6. HỆ THỐNG LỌC KHÍ THẢI -->
-  <rect x="20" y="360" width="180" height="55" fill="#bef264" stroke="#84cc16" stroke-width="2" rx="10"/>
-  <text x="110" y="385" fill="#0f172a" class="text-node" text-anchor="middle">Hệ Thống lọc,</text>
-  <text x="110" y="403" fill="#0f172a" class="text-node" text-anchor="middle">thu giữ khí thải</text>
+        '<!-- C. NHIỆT TỪ LÒ ĐỐT (MÀU CAM) -->',
+        '<line x1="360" y1="390" x2="360" y2="173" stroke="#ea580c" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arr-orange)"/>',
+        '<text x="350" y="325" fill="#ea580c" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="end">Nhiệt dư</text>',
 
-  <!-- DÒNG ĐIỆN (MÀU TRẮNG) -->
-  <path d="M 575 210 L 575 75" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>
-  <text x="585" y="145" fill="#f8fafc" font-size="11" font-weight="bold" font-family="sans-serif">Động năng &#8594; Điện năng</text>
-  <path d="M 520 45 L 225 45 L 225 200" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>
-  <path d="M 390 45 L 390 100" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>
+        '<line x1="440" y1="390" x2="440" y2="270" stroke="#ea580c" stroke-width="3" marker-end="url(#arr-orange)"/>',
+        '<text x="450" y="325" fill="#ea580c" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="start">Nhiệt làm nóng khí</text>',
 
-  <!-- LUỒNG KHÍ SẠCH (MÀU TÍM) -->
-  <line x1="100" y1="245" x2="180" y2="245" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>
-  <line x1="260" y1="245" x2="530" y2="245" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>
-  <path d="M 575 280 L 575 425 L 480 425" fill="none" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>
-  <text x="520" y="445" fill="#c084fc" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">Khí sạch nóng</text>
+        '<!-- D. KHÓI THẢI LÒ (MÀU XANH LÁ) -->',
+        '<line x1="310" y1="417.5" x2="208" y2="417.5" stroke="#bef264" stroke-width="3" marker-end="url(#arr-green)"/>',
+        '<text x="259" y="407" fill="#bef264" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">Khói thải lò</text>',
+        '</svg>'
+    ]
 
-  <!-- NHIỆT TỪ LÒ ĐỐT (MÀU CAM) -->
-  <line x1="360" y1="360" x2="360" y2="173" stroke="#ea580c" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arr-orange)"/>
-  <text x="350" y="275" fill="#ea580c" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="end">Nhiệt dư</text>
-
-  <line x1="440" y1="360" x2="440" y2="257" stroke="#ea580c" stroke-width="3" marker-end="url(#arr-orange)"/>
-  <text x="448" y="310" fill="#ea580c" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="start">Nhiệt làm nóng khí</text>
-
-  <!-- KHÓI THẢI LÒ (MÀU XANH LÁ) -->
-  <line x1="300" y1="387.5" x2="208" y2="387.5" stroke="#bef264" stroke-width="3" marker-end="url(#arr-green)"/>
-  <text x="254" y="378" fill="#bef264" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">Khói thải lò</text>
-</svg>"""
-    return svg
+    # Gộp tất cả các dòng thành một chuỗi duy nhất không có xuống dòng để không làm vỡ Markdown của Streamlit
+    return "".join(svg_lines)
 
 # CHIA BỐ CỤC 2 CỘT
 col_left, col_right = st.columns([1, 1])
@@ -360,10 +333,10 @@ with col_right:
 
     st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
     m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Rác Nạp Vào Lò", f"{current_fuel:.1f} g/s")
-    m2.metric("Công suất điện", f"{current_power:.2f} kWh")
-    m3.metric("Nhiệt Độ Khí", f"{current_t4:.1f} °C")
-    m4.metric("Điện sản xuất", f"{current_energy:.4f} kW")
+    m1.metric("🔥 Rác Nạp", f"{current_fuel:.1f} g/s")
+    m2.metric("⚡ Điện Lưới", f"{current_power:.2f} kWh")
+    m3.metric("🌡️ Nhiệt Độ Khí", f"{current_t4:.1f} °C")
+    m4.metric("🔋 Tích Lũy", f"{current_energy:.4f} kW")
 
 # VÒNG LẶP MÔ PHỎNG VẬN HÀNH
 if st.session_state.running:
