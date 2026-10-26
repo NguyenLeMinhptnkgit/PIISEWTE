@@ -5,14 +5,14 @@ import streamlit as st
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-# Cấu hình trang web
+# Cấu hình trang web rộng
 st.set_page_config(
     page_title="Mô phỏng Hệ thống EFGT",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# --- CSS GIAO DIỆN & METRIC BOXES ---
+# --- CSS TỐI ƯU GIAO DIỆN CANVA & HIGHLIGHT HỘP GIÁ TRỊ METRIC ---
 st.markdown("""
 <style>
     .block-container {
@@ -29,6 +29,8 @@ st.markdown("""
         font-weight: bold;
         margin-bottom: 8px !important;
     }
+    
+    /* TẠO HỘP BO TRÒN VÀ VIỀN NỔI BẬT CHO 4 Ô GIÁ TRỊ METRIC */
     [data-testid="stMetric"] {
         background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
         border: 1.5px solid #38bdf8 !important;
@@ -47,6 +49,7 @@ st.markdown("""
         font-weight: 600 !important;
         color: #cbd5e1 !important;
     }
+    
     div.stButton > button {
         padding: 2px 10px !important;
         font-size: 12px !important;
@@ -92,7 +95,7 @@ def tinh_toan_nguoc_efgt(m_fuel_sec):
 
     return max(W_net_real, 0.0), T4 - 273.15, m_dot_real
 
-# --- KHỞI TẠO SESSION STATE ---
+# --- KHỞI TẠO TRẠNG THÁI MÔ PHỎNG ---
 if 'x_data' not in st.session_state:
     st.session_state.x_data = []
     st.session_state.y_fuel = []
@@ -106,8 +109,10 @@ if 'x_data' not in st.session_state:
 if 'base_fuel' not in st.session_state:
     st.session_state.base_fuel = 85.0
 
+# Tiêu đề chính
 st.markdown("<div class='main-title'>⚡ GIÁM SÁT ĐỒNG BỘ TOÀN DIỆN NHÀ MÁY ĐIỆN RÁC EFGT</div>", unsafe_allow_html=True)
 
+# BẢNG ĐIỀU KHIỂN & Ô NHẬP TẢI RÁC
 col_ctrl1, col_ctrl2, col_input = st.columns([1, 1, 3])
 
 with col_ctrl1:
@@ -132,29 +137,21 @@ with col_input:
         max_value=500.0,
         value=float(st.session_state.base_fuel),
         step=1.0,
-        disabled=st.session_state.running
+        disabled=st.session_state.running,
+        help="Nhập số từ 10.0 đến 500.0 g/s khi hệ thống đang dừng"
     )
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (ĐÃ KHẮC PHỤC LỖI HIỂN THỊ MÃ THUẦN)
+# HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
 
     svg = f"""
-    <svg viewBox="0 0 760 420" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background-color: #1e293b; border-radius: 10px; border: 1px solid #334155; padding: 5px;">
+    <svg viewBox="0 0 600 380" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background-color: #1e293b; border-radius: 10px; border: 1px solid #334155; padding: 5px;">
       <defs>
-        <marker id="arrow-white" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffffff"/>
-        </marker>
-        <marker id="arrow-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#bef264"/>
-        </marker>
-        <marker id="arrow-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#d8b4fe"/>
-        </marker>
-        <marker id="arrow-orange" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#ea580c"/>
+        <marker id="arrow-white" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#f8fafc"/>
         </marker>
         <style>
           @keyframes spin {{
@@ -169,94 +166,63 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         </style>
       </defs>
 
-      <!-- CHÚ GIẢI (LEGEND) -->
-      <g transform="translate(10, 8)">
-        <line x1="5" y1="12" x2="40" y2="12" stroke="#ffffff" stroke-width="3" marker-end="url(#arrow-white)"/>
-        <text x="50" y="16" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Hướng đi của dòng điện</text>
+      <!-- 1. Hệ Thống lọc, thu giữ khí thải -->
+      <rect x="25" y="25" width="180" height="65" fill="#bef264" stroke="#84cc16" stroke-width="2" rx="12"/>
+      <text x="115" y="52" fill="#0f172a" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Hệ Thống lọc,</text>
+      <text x="115" y="70" fill="#0f172a" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">thu giữ khí thải</text>
 
-        <line x1="5" y1="32" x2="40" y2="32" stroke="#bef264" stroke-width="3" marker-end="url(#arrow-green)"/>
-        <text x="50" y="36" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Hướng đi của luồng khí thải</text>
+      <!-- 2. Bộ HTHE Gián tiếp -->
+      <rect x="225" y="105" width="130" height="70" fill="#b91c1c" stroke="#ef4444" stroke-width="2" rx="10"/>
+      <text x="290" y="146" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Bộ HTHE Gián tiếp</text>
 
-        <line x1="5" y1="52" x2="40" y2="52" stroke="#d8b4fe" stroke-width="3" marker-end="url(#arrow-purple)"/>
-        <text x="50" y="56" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Hướng đi của luồng khí sạch</text>
-
-        <line x1="5" y1="72" x2="40" y2="72" stroke="#ea580c" stroke-width="3" marker-end="url(#arrow-orange)"/>
-        <text x="50" y="76" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Hướng đi của nhiệt từ lò đốt</text>
-      </g>
-
-      <!-- CÁC KHỐI THÀNH PHẦN -->
-      <rect x="520" y="15" width="140" height="60" fill="#b91c1c" stroke="#ef4444" stroke-width="2" rx="10"/>
-      <text x="590" y="50" fill="#ffffff" font-family="sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Output</text>
-
-      <rect x="330" y="90" width="160" height="65" fill="#b91c1c" stroke="#ef4444" stroke-width="2" rx="10"/>
-      <text x="410" y="128" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Bộ HTHE Gián tiếp</text>
-
-      <rect x="230" y="190" width="75" height="75" fill="#000000" stroke="#475569" stroke-width="2" rx="16"/>
-      <g transform="translate(267.5, 227.5)">
+      <!-- 3. Máy nén khí -->
+      <rect x="130" y="200" width="80" height="80" fill="#000000" stroke="#475569" stroke-width="2" rx="18"/>
+      <g transform="translate(170, 240)">
         <g class="{fan_class}">
-          <line x1="-20" y1="0" x2="20" y2="0" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-          <line x1="0" y1="-20" x2="0" y2="20" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+          <line x1="-22" y1="0" x2="22" y2="0" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+          <line x1="0" y1="-22" x2="0" y2="22" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
         </g>
       </g>
-      <text x="267.5" y="283" fill="#f8fafc" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Máy nén khí</text>
+      <text x="170" y="300" fill="#f8fafc" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Máy nén khí</text>
 
-      <rect x="540" y="190" width="75" height="75" fill="#000000" stroke="#475569" stroke-width="2" rx="16"/>
-      <g transform="translate(577.5, 227.5)">
+      <!-- 4. Tuabin khí -->
+      <rect x="390" y="200" width="80" height="80" fill="#000000" stroke="#475569" stroke-width="2" rx="18"/>
+      <g transform="translate(430, 240)">
         <g class="{fan_class}">
-          <line x1="-20" y1="0" x2="20" y2="0" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-          <line x1="0" y1="-20" x2="0" y2="20" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+          <line x1="-22" y1="0" x2="22" y2="0" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+          <line x1="0" y1="-22" x2="0" y2="22" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
         </g>
       </g>
-      <text x="630" y="233" fill="#f8fafc" font-family="sans-serif" font-size="12" font-weight="bold">Tuabin khí</text>
+      <text x="430" y="300" fill="#f8fafc" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Tuabin khí</text>
 
-      <rect x="340" y="320" width="150" height="65" fill="#ea580c" stroke="#f97316" stroke-width="2" rx="10"/>
-      <text x="415" y="358" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Lò đốt rác ngoài</text>
+      <!-- 5. Lò đốt rác ngoài -->
+      <rect x="220" y="280" width="140" height="70" fill="#ea580c" stroke="#f97316" stroke-width="2" rx="10"/>
+      <text x="290" y="321" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Lò đốt rác ngoài</text>
 
-      <rect x="15" y="325" width="170" height="60" fill="#bef264" stroke="#84cc16" stroke-width="2" rx="10"/>
-      <text x="100" y="350" fill="#0f172a" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Hệ Thống lọc,</text>
-      <text x="100" y="368" fill="#0f172a" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">thu giữ khí thải</text>
+      <!-- 6. Trục quay -->
+      <line x1="210" y1="240" x2="390" y2="240" stroke="#f8fafc" stroke-width="4"/>
 
-      <!-- ĐƯỜNG MŨI TÊN KẾT NỐI -->
-      <!-- Khí sạch tím nạp vào Máy nén -->
-      <line x1="140" y1="227.5" x2="222" y2="227.5" stroke="#d8b4fe" stroke-width="5" marker-end="url(#arrow-purple)"/>
+      <!-- 7. Đường ống & Mũi tên -->
+      <line x1="30" y1="240" x2="120" y2="240" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
+      <path d="M 225 140 L 170 140 L 170 190" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
+      <path d="M 430 200 L 430 140 L 360 140" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
+      <path d="M 460 280 L 460 315 L 370 315" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
+      <text x="430" y="335" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Khí sạch nóng</text>
 
-      <!-- Khí sạch tím từ Máy nén sang Tuabin -->
-      <line x1="305" y1="227.5" x2="532" y2="227.5" stroke="#d8b4fe" stroke-width="5" marker-end="url(#arrow-purple)"/>
+      <path d="M 290 105 L 290 58 L 215 58" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arrow-white)"/>
+      <text x="270" y="48" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Khói thải lò</text>
 
-      <!-- Khí sạch nóng tím từ Tuabin xuống Lò đốt -->
-      <path d="M 577.5 265 L 577.5 352.5 L 498 352.5" fill="none" stroke="#d8b4fe" stroke-width="5" marker-end="url(#arrow-purple)"/>
-      <text x="577.5" y="380" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Khí sạch nóng</text>
-
-      <!-- Nhiệt làm nóng khí (Cam) từ Lò đốt chỉ lên đường khí sạch -->
-      <line x1="455" y1="320" x2="455" y2="237" stroke="#ea580c" stroke-width="4" marker-end="url(#arrow-orange)"/>
-      <text x="495" y="270" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Nhiệt làm</text>
-      <text x="495" y="286" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">nóng khí</text>
-
-      <!-- Nhiệt dư (Cam đứt nét) từ Lò đốt lên Bộ HTHE -->
-      <line x1="415" y1="320" x2="415" y2="163" stroke="#ea580c" stroke-width="4" stroke-dasharray="6,4" marker-end="url(#arrow-orange)"/>
-      <text x="375" y="278" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Nhiệt dư</text>
-
-      <!-- Đường dòng điện (Trắng) từ Tuabin lên Output -->
-      <line x1="577.5" y1="190" x2="577.5" y2="83" stroke="#ffffff" stroke-width="3" marker-end="url(#arrow-white)"/>
-      <text x="585" y="140" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold">Động năng sang Điện năng</text>
-
-      <!-- Đường dòng điện (Trắng) từ Output vòng về Máy nén khí -->
-      <path d="M 520 45 L 267.5 45 L 267.5 182" fill="none" stroke="#ffffff" stroke-width="3" marker-end="url(#arrow-white)"/>
-
-      <!-- Đường dòng điện (Trắng) từ HTHE nối vào tuyến điện Máy nén -->
-      <path d="M 330 122.5 L 267.5 122.5" fill="none" stroke="#ffffff" stroke-width="3"/>
-
-      <!-- Khói thải lò (Xanh lá) từ Lò đốt sang Hệ thống lọc -->
-      <line x1="340" y1="355" x2="193" y2="355" stroke="#bef264" stroke-width="4" marker-end="url(#arrow-green)"/>
-      <text x="260" y="345" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">Khói thải lò</text>
+      <line x1="290" y1="280" x2="290" y2="175" stroke="#fb923c" stroke-width="3" stroke-dasharray="5,5"/>
     </svg>
     """
     return svg
 
+# CHIA BỐ CỤC 2 CỘT
 col_left, col_right = st.columns([1, 1])
 
 svg_fuel = st.session_state.y_fuel[-1] if (st.session_state.running and st.session_state.y_fuel) else st.session_state.base_fuel
 
+# --- CỘT TRÁI: SƠ ĐỒ HỆ THỐNG ---
 with col_left:
     st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>⚙️ SƠ ĐỒ HỆ THỐNG EFGT</p>", unsafe_allow_html=True)
     svg_code = tao_so_do_svg_moi(st.session_state.running, svg_fuel)
@@ -316,6 +282,7 @@ def render_chart():
 
     return fig
 
+# --- CỘT PHẢI: BIỂU ĐỒ REAL-TIME & 4 HỘP GIÁ TRỊ METRIC BÊN DƯỚI ---
 with col_right:
     st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>📊 BIỂU ĐỒ REAL-TIME</p>", unsafe_allow_html=True)
     fig = render_chart()
@@ -356,16 +323,21 @@ with col_right:
     m3.metric("🌡️ Nhiệt Độ Khí", f"{current_t4:.1f} °C")
     m4.metric("🔋 Tích Lũy", f"{current_energy:.4f} kW")
 
+# VÒNG LẶP MÔ PHỎNG VẬN HÀNH
 if st.session_state.running:
     st.session_state.time_elapsed += 1
+    
     fuel_g = st.session_state.base_fuel + random.uniform(-2.5, 2.5)
+    
     m_fuel_sec = fuel_g / 1000.0
     p_real, t4_real, _ = tinh_toan_nguoc_efgt(m_fuel_sec)
+    
     st.session_state.total_energy_kwh += p_real / 3600.0
     st.session_state.x_data.append(st.session_state.time_elapsed)
     st.session_state.y_fuel.append(fuel_g)
     st.session_state.y_power.append(p_real)
     st.session_state.y_t4.append(t4_real)
     st.session_state.y_energy.append(st.session_state.total_energy_kwh)
+
     time.sleep(1)
     st.rerun()
