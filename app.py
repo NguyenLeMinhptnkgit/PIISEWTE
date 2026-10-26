@@ -277,7 +277,7 @@ def render_chart():
     fig.update_xaxes(gridcolor='#334155', showgrid=True, zeroline=False)
     fig.update_yaxes(gridcolor='#334155', showgrid=True, zeroline=False)
     fig.update_yaxes(title_text="Rác (g/s)", title_font=dict(color="#f43f5e", size=10), row=1, col=1)
-    fig.update_yaxes(title_text="Điện (kW)", title_font=dict(color="#38bdf8", size=10), row=2, col=1)
+    fig.update_yaxes(title_text="Điện (kWh)", title_font=dict(color="#38bdf8", size=10), row=2, col=1)
     fig.update_xaxes(title_text="Thời gian (s)", title_font=dict(color="#cbd5e1", size=10), row=2, col=1)
 
     return fig
@@ -319,9 +319,9 @@ with col_right:
     st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("🔥 Rác Nạp", f"{current_fuel:.1f} g/s")
-    m2.metric("⚡ Điện Lưới", f"{current_power:.2f} kW")
+    m2.metric("⚡ Điện Lưới", f"{current_power:.2f} kWh")
     m3.metric("🌡️ Nhiệt Độ Khí", f"{current_t4:.1f} °C")
-    m4.metric("🔋 Tích Lũy", f"{current_energy:.4f} kWh")
+    m4.metric("🔋 Tích Lũy", f"{current_energy:.4f} kW")
 
 # VÒNG LẶP MÔ PHỎNG VẬN HÀNH
 if st.session_state.running:
