@@ -142,7 +142,7 @@ with col_input:
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# --- HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (ĐÃ SỬA CHUẨN MŨI TÊN TRẮNG VÀ TÍM) ---
+# --- HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG CHUẨN MÔ HÌNH NGUYÊN BẢN ---
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
 
@@ -173,63 +173,71 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<text x="40" y="80" class="legend-text">Hướng đi của nhiệt từ lò đốt</text>',
         '</g>',
 
-        '<!-- 1. KHỐI OUTPUT -->',
-        '<rect x="560" y="20" width="160" height="50" fill="#991b1b" stroke="#ef4444" stroke-width="2" rx="10"/>',
-        '<text x="640" y="52" fill="#ffffff" font-family="sans-serif" font-size="20" font-weight="bold" text-anchor="middle">Output</text>',
+        '<!-- 1. KHỐI OUTPUT (GÓC TRÊN PHẢI) -->',
+        '<rect x="540" y="30" width="160" height="60" fill="#991b1b" stroke="#ef4444" stroke-width="2" rx="10"/>',
+        '<text x="620" y="67" fill="#ffffff" font-family="sans-serif" font-size="22" font-weight="bold" text-anchor="middle">Output</text>',
 
-        '<!-- 2. BỘ HTHE GIÁN TIẾP -->',
-        '<rect x="320" y="110" width="160" height="55" fill="#991b1b" stroke="#ef4444" stroke-width="2" rx="10"/>',
-        '<text x="400" y="143" fill="#ffffff" class="text-node" text-anchor="middle">Bộ HTHE Gián tiếp</text>',
+        '<!-- 2. BỘ HTHE GIÁN TIẾP (Ở GIỮA PHÍA TRÊN) -->',
+        '<rect x="300" y="140" width="170" height="65" fill="#991b1b" stroke="#ef4444" stroke-width="2" rx="10"/>',
+        '<text x="385" y="178" fill="#ffffff" class="text-node" text-anchor="middle">Bộ HTHE Gián tiếp</text>',
 
-        '<!-- 3. MÁY NÉN KHÍ -->',
-        '<rect x="180" y="220" width="75" height="75" fill="#000000" stroke="#64748b" stroke-width="2" rx="15"/>',
-        f'<g transform="translate(217.5, 257.5)"><g class="{fan_class}">',
-        '<line x1="-18" y1="0" x2="18" y2="0" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>',
-        '<line x1="0" y1="-18" x2="0" y2="18" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>',
+        '<!-- 3. MÁY NÉN KHÍ (BÊN TRÁI HÀNG GIỮA) -->',
+        '<rect x="190" y="230" width="80" height="80" fill="#000000" stroke="#64748b" stroke-width="2" rx="15"/>',
+        f'<g transform="translate(230, 270)"><g class="{fan_class}">',
+        '<line x1="-20" y1="0" x2="20" y2="0" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>',
+        '<line x1="0" y1="-20" x2="0" y2="20" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>',
         '</g></g>',
-        '<text x="217.5" y="315" fill="#f8fafc" class="text-node" text-anchor="middle">Máy nén khí</text>',
+        '<text x="230" y="330" fill="#f8fafc" class="text-node" text-anchor="middle">Máy nén khí</text>',
 
-        '<!-- 4. TUABIN KHÍ -->',
-        '<rect x="540" y="220" width="75" height="75" fill="#000000" stroke="#64748b" stroke-width="2" rx="15"/>',
-        f'<g transform="translate(577.5, 257.5)"><g class="{fan_class}">',
-        '<line x1="-18" y1="0" x2="18" y2="0" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>',
-        '<line x1="0" y1="-18" x2="0" y2="18" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>',
+        '<!-- 4. TUABIN KHÍ (BÊN PHẢI HÀNG GIỮA) -->',
+        '<rect x="580" y="230" width="80" height="80" fill="#000000" stroke="#64748b" stroke-width="2" rx="15"/>',
+        f'<g transform="translate(620, 270)"><g class="{fan_class}">',
+        '<line x1="-20" y1="0" x2="20" y2="0" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>',
+        '<line x1="0" y1="-20" x2="0" y2="20" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>',
         '</g></g>',
-        '<text x="630" y="262" fill="#f8fafc" class="text-node" text-anchor="start">Tuabin khí</text>',
+        '<text x="672" y="275" fill="#f8fafc" class="text-node" text-anchor="start">Tuabin khí</text>',
 
-        '<!-- 5. LÒ ĐỐT RÁC NGOÀI -->',
-        '<rect x="310" y="390" width="180" height="55" fill="#ea580c" stroke="#fb923c" stroke-width="2" rx="10"/>',
-        '<text x="400" y="423" fill="#ffffff" class="text-node" text-anchor="middle">Lò đốt rác ngoài</text>',
+        '<!-- 5. LÒ ĐỐT RÁC NGOÀI (BÊN DƯỚI Ở GIỮA) -->',
+        '<rect x="310" y="400" width="180" height="60" fill="#ea580c" stroke="#fb923c" stroke-width="2" rx="10"/>',
+        '<text x="400" y="436" fill="#ffffff" class="text-node" text-anchor="middle">Lò đốt rác ngoài</text>',
 
-        '<!-- 6. HỆ THỐNG LỌC KHÍ THẢI -->',
-        '<rect x="20" y="390" width="180" height="55" fill="#bef264" stroke="#84cc16" stroke-width="2" rx="10"/>',
-        '<text x="110" y="415" fill="#0f172a" class="text-node" text-anchor="middle">Hệ Thống lọc,</text>',
-        '<text x="110" y="433" fill="#0f172a" class="text-node" text-anchor="middle">thu giữ khí thải</text>',
+        '<!-- 6. HỆ THỐNG LỌC KHÍ THẢI (BÊN DƯỚI BÊN TRÁI) -->',
+        '<rect x="20" y="400" width="190" height="60" fill="#bef264" stroke="#84cc16" stroke-width="2" rx="10"/>',
+        '<text x="115" y="426" fill="#0f172a" class="text-node" text-anchor="middle">Hệ Thống lọc,</text>',
+        '<text x="115" y="444" fill="#0f172a" class="text-node" text-anchor="middle">thu giữ khí thải</text>',
 
-        '<!-- A. DÒNG ĐIỆN (MÀU TRẮNG): Tuabin -> Output, Output & HTHE -> Máy nén khí -->',
-        '<path d="M 577.5 220 L 577.5 75" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
-        '<text x="590" y="145" fill="#f8fafc" font-size="11" font-weight="bold" font-family="sans-serif">Động năng &#8594; Điện năng</text>',
-        '<path d="M 560 45 L 217.5 45 L 217.5 210" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
-        '<!-- Đường trắng xuất phát từ Bộ HTHE Gián tiếp nối lên đường chính tới Máy nén khí -->',
-        '<path d="M 370 110 L 370 45" fill="none" stroke="#f8fafc" stroke-width="3"/>',
+        '<!-- A. DÒNG ĐIỆN / ĐỘNG NĂNG -> ĐIỆN NĂNG (MÀU TRẮNG) -->',
+        '<!-- Tuabin khí đi LÊN Output -->',
+        '<path d="M 620 230 L 620 98" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
+        '<text x="630" y="160" fill="#f8fafc" font-size="11" font-weight="bold" font-family="sans-serif">Động năng &#8594; Điện năng</text>',
+
+        '<!-- Output đi SANG TRÁI -> RẼ XUỐNG Máy nén khí & VÀO CẠNH TRÁI BỘ HTHE GIÁN TIẾP -->',
+        '<path d="M 540 60 L 230 60 L 230 220" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
+        '<!-- Nhánh nối vào CẠNH TRÁI của Bộ HTHE Gián tiếp -->',
+        '<path d="M 230 172.5 L 298 172.5" fill="none" stroke="#f8fafc" stroke-width="3"/>',
 
         '<!-- B. LUỒNG KHÍ SẠCH (MÀU TÍM) -->',
-        '<line x1="80" y1="257.5" x2="170" y2="257.5" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
-        '<line x1="255" y1="257.5" x2="530" y2="257.5" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
-        '<!-- Mũi tên tím đi từ Tuabin chuẩn tâm vào cạnh phải Lò đốt rác ngoài (x=498, y=417.5) -->',
-        '<path d="M 577.5 295 L 577.5 417.5 L 498 417.5" fill="none" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
-        '<text x="535" y="438" fill="#c084fc" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">Khí sạch nóng</text>',
+        '<!-- Khí vào Máy nén khí -->',
+        '<line x1="80" y1="270" x2="180" y2="270" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
+        '<!-- Khí từ Máy nén khí đến Tuabin khí -->',
+        '<line x1="270" y1="270" x2="570" y2="270" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
+        '<!-- Khí sạch nóng từ đáy Tuabin khí đi xuống và nối chính xác CẠNH PHẢI Lò đốt rác ngoài -->',
+        '<path d="M 620 310 L 620 430 L 498 430" fill="none" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
+        '<text x="560" y="455" fill="#c084fc" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">Khí sạch nóng</text>',
 
         '<!-- C. NHIỆT TỪ LÒ ĐỐT (MÀU CAM) -->',
-        '<line x1="360" y1="390" x2="360" y2="173" stroke="#ea580c" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arr-orange)"/>',
-        '<text x="350" y="325" fill="#ea580c" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="end">Nhiệt dư</text>',
+        '<!-- Nhiệt dư (nét đứt) đi từ đỉnh Lò đốt lên đáy Bộ HTHE Gián tiếp -->',
+        '<line x1="385" y1="400" x2="385" y2="213" stroke="#ea580c" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arr-orange)"/>',
+        '<text x="375" y="340" fill="#ea580c" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="end">Nhiệt dư</text>',
 
-        '<line x1="440" y1="390" x2="440" y2="270" stroke="#ea580c" stroke-width="3" marker-end="url(#arr-orange)"/>',
-        '<text x="450" y="325" fill="#ea580c" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="start">Nhiệt làm nóng khí</text>',
+        '<!-- Nhiệt làm nóng khí (nét liền) đi từ đỉnh Lò đốt lên đường khí sạch -->',
+        '<line x1="450" y1="400" x2="450" y2="280" stroke="#ea580c" stroke-width="3" marker-end="url(#arr-orange)"/>',
+        '<text x="460" y="340" fill="#ea580c" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="start">Nhiệt làm nóng khí</text>',
 
         '<!-- D. KHÓI THẢI LÒ (MÀU XANH LÁ) -->',
-        '<line x1="310" y1="417.5" x2="208" y2="417.5" stroke="#bef264" stroke-width="3" marker-end="url(#arr-green)"/>',
-        '<text x="259" y="407" fill="#bef264" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">Khói thải lò</text>',
+        '<!-- Từ cạnh trái Lò đốt sang cạnh phải Hệ thống lọc -->',
+        '<line x1="310" y1="430" x2="218" y2="430" stroke="#bef264" stroke-width="3" marker-end="url(#arr-green)"/>',
+        '<text x="264" y="420" fill="#bef264" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">Khói thải lò</text>',
         '</svg>'
     ]
 
