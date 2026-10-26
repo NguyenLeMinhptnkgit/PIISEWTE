@@ -142,7 +142,7 @@ with col_input:
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# --- HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG CHUẨN MÔ HÌNH NGUYÊN BẢN ---
+# --- HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG CHUẨN 100% THEO ẢNH GỐC ---
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
 
@@ -178,8 +178,8 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<text x="620" y="67" fill="#ffffff" font-family="sans-serif" font-size="22" font-weight="bold" text-anchor="middle">Output</text>',
 
         '<!-- 2. BỘ HTHE GIÁN TIẾP (Ở GIỮA PHÍA TRÊN) -->',
-        '<rect x="300" y="140" width="170" height="65" fill="#991b1b" stroke="#ef4444" stroke-width="2" rx="10"/>',
-        '<text x="385" y="178" fill="#ffffff" class="text-node" text-anchor="middle">Bộ HTHE Gián tiếp</text>',
+        '<rect x="300" y="130" width="170" height="65" fill="#991b1b" stroke="#ef4444" stroke-width="2" rx="10"/>',
+        '<text x="385" y="168" fill="#ffffff" class="text-node" text-anchor="middle">Bộ HTHE Gián tiếp</text>',
 
         '<!-- 3. MÁY NÉN KHÍ (BÊN TRÁI HÀNG GIỮA) -->',
         '<rect x="190" y="230" width="80" height="80" fill="#000000" stroke="#64748b" stroke-width="2" rx="15"/>',
@@ -207,14 +207,15 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<text x="115" y="444" fill="#0f172a" class="text-node" text-anchor="middle">thu giữ khí thải</text>',
 
         '<!-- A. DÒNG ĐIỆN / ĐỘNG NĂNG -> ĐIỆN NĂNG (MÀU TRẮNG) -->',
-        '<!-- Tuabin khí đi LÊN Output -->',
+        '<!-- 1. Tuabin khí đi LÊN Output -->',
         '<path d="M 620 230 L 620 98" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
         '<text x="630" y="160" fill="#f8fafc" font-size="11" font-weight="bold" font-family="sans-serif">Động năng &#8594; Điện năng</text>',
 
-        '<!-- Output đi SANG TRÁI -> RẼ XUỐNG Máy nén khí & VÀO CẠNH TRÁI BỘ HTHE GIÁN TIẾP -->',
-        '<path d="M 540 60 L 230 60 L 230 220" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
-        '<!-- Nhánh nối vào CẠNH TRÁI của Bộ HTHE Gián tiếp -->',
-        '<path d="M 230 172.5 L 298 172.5" fill="none" stroke="#f8fafc" stroke-width="3"/>',
+        '<!-- 2. Output đi sang trái rồi đi XUỐNG Máy nén khí (Cạnh trên bên trái) -->',
+        '<path d="M 540 60 L 215 60 L 215 220" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
+
+        '<!-- 3. Bộ HTHE Gián tiếp đi từ CẠNH TRÁI sang trái rồi đi XUỐNG Máy nén khí (Cạnh trên bên phải) -->',
+        '<path d="M 300 162.5 L 245 162.5 L 245 220" fill="none" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
 
         '<!-- B. LUỒNG KHÍ SẠCH (MÀU TÍM) -->',
         '<!-- Khí vào Máy nén khí -->',
@@ -227,12 +228,12 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
 
         '<!-- C. NHIỆT TỪ LÒ ĐỐT (MÀU CAM) -->',
         '<!-- Nhiệt dư (nét đứt) đi từ đỉnh Lò đốt lên đáy Bộ HTHE Gián tiếp -->',
-        '<line x1="385" y1="400" x2="385" y2="213" stroke="#ea580c" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arr-orange)"/>',
-        '<text x="375" y="340" fill="#ea580c" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="end">Nhiệt dư</text>',
+        '<line x1="370" y1="400" x2="370" y2="203" stroke="#ea580c" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arr-orange)"/>',
+        '<text x="360" y="340" fill="#ea580c" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="end">Nhiệt dư</text>',
 
         '<!-- Nhiệt làm nóng khí (nét liền) đi từ đỉnh Lò đốt lên đường khí sạch -->',
-        '<line x1="450" y1="400" x2="450" y2="280" stroke="#ea580c" stroke-width="3" marker-end="url(#arr-orange)"/>',
-        '<text x="460" y="340" fill="#ea580c" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="start">Nhiệt làm nóng khí</text>',
+        '<line x1="440" y1="400" x2="440" y2="280" stroke="#ea580c" stroke-width="3" marker-end="url(#arr-orange)"/>',
+        '<text x="450" y="340" fill="#ea580c" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="start">Nhiệt làm nóng khí</text>',
 
         '<!-- D. KHÓI THẢI LÒ (MÀU XANH LÁ) -->',
         '<!-- Từ cạnh trái Lò đốt sang cạnh phải Hệ thống lọc -->',
