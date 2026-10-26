@@ -345,10 +345,10 @@ with col_right:
 
     st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
     m1, m2, m3, m4 = st.columns(4)
-    m1.metric("🔥 Rác Nạp", f"{current_fuel:.1f} g/s")
-    m2.metric("⚡ Điện Lưới", f"{current_power:.2f} kWh")
-    m3.metric("🌡️ Nhiệt Độ Khí", f"{current_t4:.1f} °C")
-    m4.metric("🔋 Tích Lũy", f"{current_energy:.4f} kW")
+    m1.metric("Khối Lượng Rác Nạp Vào Lò Mỗi Giây", f"{current_fuel:.1f} g/s")
+    m2.metric("Công Suất Điện", f"{current_power:.2f} kWh")
+    m3.metric("Nhiệt Độ Khí", f"{current_t4:.1f} °C")
+    m4.metric("Tổng Điện Sản Xuất", f"{current_energy:.4f} kW")
 
 # VÒNG LẶP MÔ PHỎNG VẬN HÀNH
 if st.session_state.running:
