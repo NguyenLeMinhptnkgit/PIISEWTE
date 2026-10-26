@@ -142,7 +142,7 @@ with col_input:
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# --- HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG CHUẨN 100% THEO ẢNH GỐC ---
+# --- HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (ĐÃ THÊM MŨI TÊN PHẢI KHỐI OUTPUT) ---
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
 
@@ -176,6 +176,8 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<!-- 1. KHỐI OUTPUT (GÓC TRÊN PHẢI) -->',
         '<rect x="540" y="30" width="160" height="60" fill="#991b1b" stroke="#ef4444" stroke-width="2" rx="10"/>',
         '<text x="620" y="67" fill="#ffffff" font-family="sans-serif" font-size="22" font-weight="bold" text-anchor="middle">Output</text>',
+        '<!-- MŨI TÊN CHÌA RA TỪ KHỐI OUTPUT VỀ BÊN PHẢI -->',
+        '<line x1="700" y1="60" x2="770" y2="60" stroke="#f8fafc" stroke-width="3" marker-end="url(#arr-black)"/>',
 
         '<!-- 2. BỘ HTHE GIÁN TIẾP (Ở GIỮA PHÍA TRÊN) -->',
         '<rect x="300" y="130" width="170" height="65" fill="#991b1b" stroke="#ef4444" stroke-width="2" rx="10"/>',
