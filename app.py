@@ -1,3 +1,4 @@
+import os
 import time
 import random
 import math
@@ -94,6 +95,14 @@ def tinh_toan_nguoc_efgt(m_fuel_sec):
 
     return max(W_net_real, 0.0), T4 - 273.15, m_dot_real
 
+# --- HÀM ĐỌC ẢNH (CÓ CACHE ĐỂ KHÔNG ĐỌC LẠI MỖI GIÂY) ---
+@st.cache_data
+def load_image(path):
+    with open(path, "rb") as f:
+        return f.read()
+
+ANH_SO_DO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "so_do_efgt.png")
+
 # --- KHỞI TẠO TRẠNG THÁI MÔ PHỎNG ---
 if 'x_data' not in st.session_state:
     st.session_state.x_data = []
@@ -142,7 +151,7 @@ with col_input:
     if not st.session_state.running:
         st.session_state.base_fuel = fuel_input
 
-# --- HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG (ĐÃ KÉO DÀI MŨI TÊN GIỮA LÒ ĐỐT VÀ SẤY KHÔ RÁC) ---
+# --- HÀM VẼ SƠ ĐỒ HỆ THỐNG SVG MỚI (CẬP NHẬT THEO ĐÚNG SƠ ĐỒ HÌNH MẪU) ---
 def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
     fan_class = "fan-spinning" if is_running else ""
 
@@ -240,21 +249,17 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<line x1="435" y1="390" x2="435" y2="245" stroke="#ea580c" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arr-orange)"/>',
         '<text x="442" y="355" fill="#ea580c" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="start">Nhiệt dư</text>',
 
-        '<!-- 3 MŨI TÊN ĐÃ ĐƯỢC KÉO DÀI NỐI LIỀN MÉP CẠNH DƯỚI LÒ ĐỐT (y=450) VÀ MÉP TRÊN SẤY KHÔ RÁC (y=475) -->',
-        '<!-- Mũi tên xanh dương đi lên (Rác sấy nạp lò) -->',
-        '<line x1="442" y1="475" x2="442" y2="453" stroke="#38bdf8" stroke-width="3" marker-end="url(#arr-blue)"/>',
-        '<!-- Mũi tên cam đi lên (Nhiệt/Khí hoàn tuần) -->',
-        '<line x1="462" y1="475" x2="462" y2="453" stroke="#ea580c" stroke-width="3" marker-end="url(#arr-orange)"/>',
-        '<!-- Mũi tên cam đi xuống (Nhiệt từ Lò đốt sang Sấy khô rác) -->',
-        '<line x1="482" y1="450" x2="482" y2="472" stroke="#ea580c" stroke-width="3" marker-end="url(#arr-orange)"/>',
+        '<line x1="475" y1="450" x2="475" y2="467" stroke="#ea580c" stroke-width="3" marker-end="url(#arr-orange)"/>',
+        '<line x1="460" y1="475" x2="460" y2="458" stroke="#ea580c" stroke-width="3" marker-end="url(#arr-orange)"/>',
 
         '<!-- D. KHÓI THẢI LÒ (MÀU XANH LÁ) -->',
         '<line x1="315" y1="420" x2="208" y2="420" stroke="#bef264" stroke-width="3" marker-end="url(#arr-green)"/>',
         '<text x="260" y="410" fill="#bef264" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">Khói thải lò</text>',
 
         '<!-- E. DÒNG RÁC THẢI (MÀU XANH DƯƠNG) -->',
-        '<line x1="185" y1="497" x2="412" y2="497" stroke="#38bdf8" stroke-width="3" marker-end="url(#arr-blue)"/>',
+        '<line x1="185" y1="497" x2="410" y2="497" stroke="#38bdf8" stroke-width="3" marker-end="url(#arr-blue)"/>',
         '<text x="290" y="488" fill="#38bdf8" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="middle">Loại bỏ rác không cháy được</text>',
+        '<line x1="440" y1="475" x2="440" y2="458" stroke="#38bdf8" stroke-width="3" marker-end="url(#arr-blue)"/>',
 
         '<!-- F. BẢNG CHÚ GIẢI GÓC DƯỚI PHẢI -->',
         '<g transform="translate(560, 465)">',
@@ -338,7 +343,7 @@ def render_chart():
 
     return fig
 
-# --- CỘT PHẢI: BIỂU ĐỒ REAL-TIME & METRIC ---
+# --- CỘT PHẢI: BIỂU ĐỒ REAL-TIME, METRIC & ẢNH THAM CHIẾU ---
 with col_right:
     st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 2px;'>📊 BIỂU ĐỒ REAL-TIME</p>", unsafe_allow_html=True)
     fig = render_chart()
@@ -376,6 +381,13 @@ with col_right:
     m2.metric("⚡ Điện Lưới", f"{current_power:.2f} kWh")
     m3.metric("🌡️ Nhiệt Độ Khí", f"{current_t4:.1f} °C")
     m4.metric("🔋 Tích Lũy", f"{current_energy:.4f} kW")
+
+    # --- ẢNH THAM CHIẾU Ở PHẦN TRỐNG BÊN PHẢI ---
+    st.markdown("<p style='font-size: 13px; font-weight: bold; color: #cbd5e1; margin: 10px 0 2px 0;'>🖼️ SƠ ĐỒ THAM CHIẾU EFGT</p>", unsafe_allow_html=True)
+    if os.path.exists(ANH_SO_DO):
+        st.image(load_image(ANH_SO_DO), use_container_width=True)
+    else:
+        st.warning("Chưa tìm thấy file so_do_efgt.png cùng thư mục với file .py")
 
 # VÒNG LẶP MÔ PHỎNG VẬN HÀNH
 if st.session_state.running:
