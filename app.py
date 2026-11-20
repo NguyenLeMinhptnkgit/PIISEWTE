@@ -355,15 +355,20 @@ def render_chart():
     if not st.session_state.x_data:
         return None
     
-    x_vis = st.session_state.x_data[-20:]
-    y_fuel_vis = st.session_state.y_fuel[-20:]
-    y_power_vis = st.session_state.y_power[-20:]
+    # Giữ toàn bộ dữ liệu từ 1s để không bị mất khi kéo/pan lại biểu đồ
+    x_all = st.session_state.x_data
+    y_fuel_all = st.session_state.y_fuel
+    y_power_all = st.session_state.y_power
+
+    # Khung nhìn mặc định hiển thị 20 giây gần nhất
+    x_max = x_all[-1]
+    x_min = max(1, x_max - 19)
 
     fig = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.12)
 
     fig.add_trace(go.Scatter(
-        x=x_vis,
-        y=y_fuel_vis,
+        x=x_all,
+        y=y_fuel_all,
         mode='lines+markers',
         name='Tải Rác',
         line=dict(color='#dc2626', width=2.5),
@@ -372,8 +377,8 @@ def render_chart():
     ), row=1, col=1)
 
     fig.add_trace(go.Scatter(
-        x=x_vis,
-        y=y_power_vis,
+        x=x_all,
+        y=y_power_all,
         mode='lines+markers',
         name='Điện Lưới',
         line=dict(color='#0284c7', width=2.5),
@@ -385,9 +390,10 @@ def render_chart():
         paper_bgcolor='#ffffff',
         plot_bgcolor='#ffffff',
         font=dict(color='#000000', family="Segoe UI, Roboto, Arial, sans-serif"),
-        margin=dict(l=15, r=15, t=10, b=15),
-        height=320,
+        margin=dict(l=15, r=15, t=10, b=38),
+        height=330,
         showlegend=False,
+        dragmode="pan",
         hovermode="closest",
         hoverlabel=dict(
             bgcolor="#ffffff",
@@ -397,6 +403,7 @@ def render_chart():
     )
 
     fig.update_xaxes(
+        range=[x_min - 0.5, x_max + 0.5],
         gridcolor='#e2e8f0',
         linecolor='#000000',
         linewidth=1,
@@ -434,7 +441,7 @@ with col_right:
                     selected_idx = st.session_state.x_data.index(target_x)
     else:
         st.markdown(
-            "<div style='height: 320px; background-color: #ffffff; border: 1.5px solid #000000; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000000; font-size: 13px; font-weight: 600;'>Nhấn «Bắt đầu / Dừng» để hiển thị biểu đồ thời gian thực</div>",
+            "<div style='height: 330px; background-color: #ffffff; border: 1.5px solid #000000; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000000; font-size: 13px; font-weight: 600;'>Nhấn «Bắt đầu / Dừng» để hiển thị biểu đồ thời gian thực</div>",
             unsafe_allow_html=True
         )
 
