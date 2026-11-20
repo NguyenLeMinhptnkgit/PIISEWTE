@@ -12,13 +12,14 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- CSS GIAO DIỆN NỀN TRẮNG, CHỮ ĐEN TOÀN DIỆN ---
+# --- CSS GIAO DIỆN NỀN TRẮNG, CHỮ ĐEN, ĐỒNG BỘ PHÔNG CHỮ TOÀN DIỆN ---
 st.markdown("""
 <style>
-    /* Ép nền trắng, chữ đen cho toàn bộ trang và các thành phần Streamlit */
-    .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"], [data-testid="stToolbar"] {
+    /* Đồng bộ phông chữ tiếng Việt chuẩn nét, nền trắng, chữ đen */
+    html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"], [data-testid="stToolbar"] {
         background-color: #ffffff !important;
         color: #000000 !important;
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
     }
     .block-container {
         padding-top: 0.6rem !important;
@@ -27,13 +28,23 @@ st.markdown("""
         padding-right: 1rem !important;
         background-color: #ffffff !important;
     }
-    p, span, label, div, h1, h2, h3, h4, li {
+    p, span, label, div, h1, h2, h3, h4, li, b, strong, i, em {
         color: #000000 !important;
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+    }
+    code {
+        background-color: #f1f5f9 !important;
+        color: #000000 !important;
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+        font-weight: 700 !important;
+        padding: 1px 5px !important;
+        border-radius: 4px !important;
+        border: 1px solid #cbd5e1 !important;
     }
     .main-title {
         text-align: center;
         color: #000000 !important;
-        font-family: sans-serif;
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
         font-size: 20px !important;
         font-weight: 800 !important;
         margin-bottom: 10px !important;
@@ -89,15 +100,15 @@ st.markdown("""
 
     /* Hộp hướng dẫn sử dụng */
     .guide-box {
-        background-color: #f8fafc;
+        background-color: #ffffff;
         border: 1.5px solid #000000;
         border-radius: 10px;
         padding: 14px 18px;
         margin-top: 12px;
         color: #000000 !important;
-        font-family: sans-serif;
-        font-size: 13px;
-        line-height: 1.6;
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+        font-size: 13.5px;
+        line-height: 1.65;
     }
     .guide-title {
         font-size: 15px;
@@ -216,14 +227,14 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<style>',
         '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }',
         f'.fan-spinning {{ transform-origin: center; transform-box: fill-box; animation: spin 0.6s linear infinite; }}',
-        '.text-node { font-family: sans-serif; font-size: 13px; font-weight: bold; }',
-        '.legend-text { font-family: sans-serif; font-size: 11px; font-weight: 700; fill: #000000; }',
+        '.text-node { font-family: "Segoe UI", Roboto, Arial, sans-serif; font-size: 13px; font-weight: bold; }',
+        '.legend-text { font-family: "Segoe UI", Roboto, Arial, sans-serif; font-size: 11px; font-weight: 700; fill: #000000; }',
         '</style>',
         '</defs>',
 
         '<!-- 1. KHỐI OUTPUT (GÓC TRÊN PHẢI) -->',
         '<rect x="540" y="15" width="160" height="55" fill="#b91c1c" stroke="#991b1b" stroke-width="2" rx="10"/>',
-        '<text x="620" y="50" fill="#ffffff" font-family="sans-serif" font-size="22" font-weight="bold" text-anchor="middle">Output</text>',
+        '<text x="620" y="50" fill="#ffffff" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle">Output</text>',
         '<line x1="700" y1="42.5" x2="770" y2="42.5" stroke="#000000" stroke-width="3" marker-end="url(#arr-black)"/>',
 
         '<!-- 2. ĐỘNG CƠ STIRLING (TRÊN GIỮA) -->',
@@ -236,7 +247,7 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
 
         '<!-- 4. KHỐI HTHE XANH LÁ (TRÊN TUYẾN DÒNG KHÍ) -->',
         '<rect x="345" y="260" width="115" height="50" fill="#22c55e" stroke="#16a34a" stroke-width="2" rx="8"/>',
-        '<text x="402.5" y="291" fill="#ffffff" font-family="sans-serif" font-size="15" font-weight="bold" text-anchor="middle">HTHE</text>',
+        '<text x="402.5" y="291" fill="#ffffff" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="middle">HTHE</text>',
 
         '<!-- 5. MÁY NÉN KHÍ (BÊN TRÁI) -->',
         '<rect x="190" y="247.5" width="75" height="75" fill="#000000" stroke="#000000" stroke-width="2" rx="15"/>',
@@ -269,35 +280,35 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<text x="110" y="434" fill="#000000" class="text-node" text-anchor="middle">lọc, thu giữ khí thải</text>',
 
         '<!-- 10. NHÃN RÁC THẢI ĐẦU VÀO -->',
-        '<text x="110" y="495" fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Rác thải đầu vào</text>',
+        '<text x="110" y="495" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Rác thải đầu vào</text>',
 
         '<!-- 11. NHÃN KHÔNG KHÍ NẠP VÀO -->',
-        '<text x="75" y="290" fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" text-anchor="middle">Không khí</text>',
+        '<text x="75" y="290" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">Không khí</text>',
 
         '<!-- A. DÒNG ĐIỆN (MÀU ĐEN) -->',
         '<path d="M 617.5 247.5 L 617.5 80" fill="none" stroke="#000000" stroke-width="3" marker-end="url(#arr-black)"/>',
-        '<text x="627" y="160" fill="#000000" font-size="11" font-weight="bold" font-family="sans-serif">Động năng &#8594; Điện năng</text>',
+        '<text x="627" y="160" fill="#000000" font-size="11" font-weight="bold" font-family="Segoe UI, Roboto, Arial, sans-serif">Động năng &#8594; Điện năng</text>',
 
         '<path d="M 540 42.5 L 210 42.5 L 210 237.5" fill="none" stroke="#000000" stroke-width="3" marker-end="url(#arr-black)"/>',
 
         '<path d="M 330 82.5 L 245 82.5 L 245 237.5" fill="none" stroke="#000000" stroke-width="3" marker-end="url(#arr-black)"/>',
 
         '<path d="M 402.5 180 L 402.5 115" fill="none" stroke="#000000" stroke-width="3" marker-end="url(#arr-black)"/>',
-        '<text x="412" y="150" fill="#000000" font-size="10" font-weight="bold" font-family="sans-serif">Nhiệt năng &#8594; Điện năng</text>',
+        '<text x="412" y="150" fill="#000000" font-size="10" font-weight="bold" font-family="Segoe UI, Roboto, Arial, sans-serif">Nhiệt năng &#8594; Điện năng</text>',
 
         '<!-- B. LUỒNG KHÍ SẠCH (MÀU TÍM) -->',
         '<line x1="115" y1="285" x2="180" y2="285" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
         '<line x1="265" y1="285" x2="335" y2="285" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
         '<line x1="460" y1="285" x2="570" y2="285" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
         '<path d="M 617.5 322.5 L 617.5 420 L 498 420" fill="none" stroke="#c084fc" stroke-width="6" marker-end="url(#arr-purple)"/>',
-        '<text x="555" y="442" fill="#000000" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">Khí sạch nóng</text>',
+        '<text x="555" y="442" fill="#000000" font-size="11" font-weight="bold" font-family="Segoe UI, Roboto, Arial, sans-serif" text-anchor="middle">Khí sạch nóng</text>',
 
         '<!-- C. NHIỆT TỪ LÒ ĐỐT (MÀU CAM) -->',
         '<line x1="370" y1="390" x2="370" y2="320" stroke="#ea580c" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arr-orange)"/>',
-        '<text x="365" y="355" fill="#000000" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="end">Nhiệt làm nóng khí</text>',
+        '<text x="365" y="355" fill="#000000" font-size="10" font-weight="bold" font-family="Segoe UI, Roboto, Arial, sans-serif" text-anchor="end">Nhiệt làm nóng khí</text>',
 
         '<line x1="435" y1="390" x2="435" y2="245" stroke="#ea580c" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arr-orange)"/>',
-        '<text x="442" y="355" fill="#000000" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="start">Nhiệt dư</text>',
+        '<text x="442" y="355" fill="#000000" font-size="10" font-weight="bold" font-family="Segoe UI, Roboto, Arial, sans-serif" text-anchor="start">Nhiệt dư</text>',
 
         '<!-- 3 MŨI TÊN NỐI LIỀN GIỮA LÒ ĐỐT VÀ SẤY KHÔ RÁC -->',
         '<line x1="442" y1="475" x2="442" y2="453" stroke="#0284c7" stroke-width="3" marker-end="url(#arr-blue)"/>',
@@ -306,11 +317,11 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
 
         '<!-- D. KHÓI THẢI LÒ (MÀU XANH LÁ) -->',
         '<line x1="315" y1="420" x2="208" y2="420" stroke="#84cc16" stroke-width="3" marker-end="url(#arr-green)"/>',
-        '<text x="260" y="410" fill="#000000" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">Khói thải lò</text>',
+        '<text x="260" y="410" fill="#000000" font-size="11" font-weight="bold" font-family="Segoe UI, Roboto, Arial, sans-serif" text-anchor="middle">Khói thải lò</text>',
 
         '<!-- E. DÒNG RÁC THẢI (MÀU XANH DƯƠNG) -->',
         '<line x1="185" y1="497" x2="412" y2="497" stroke="#0284c7" stroke-width="3" marker-end="url(#arr-blue)"/>',
-        '<text x="290" y="488" fill="#000000" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="middle">Loại bỏ rác không cháy được</text>',
+        '<text x="290" y="488" fill="#000000" font-size="10" font-weight="bold" font-family="Segoe UI, Roboto, Arial, sans-serif" text-anchor="middle">Loại bỏ rác không cháy được</text>',
 
         '<!-- F. BẢNG CHÚ GIẢI GÓC DƯỚI PHẢI -->',
         '<g transform="translate(560, 465)">',
@@ -373,7 +384,7 @@ def render_chart():
     fig.update_layout(
         paper_bgcolor='#ffffff',
         plot_bgcolor='#ffffff',
-        font=dict(color='#000000', family="sans-serif"),
+        font=dict(color='#000000', family="Segoe UI, Roboto, Arial, sans-serif"),
         margin=dict(l=15, r=15, t=10, b=15),
         height=320,
         showlegend=False,
@@ -381,7 +392,7 @@ def render_chart():
         hoverlabel=dict(
             bgcolor="#ffffff",
             bordercolor="#000000",
-            font=dict(color="#000000", size=11, family="sans-serif")
+            font=dict(color="#000000", size=11, family="Segoe UI, Roboto, Arial, sans-serif")
         )
     )
 
@@ -457,14 +468,14 @@ st.markdown("""
     <div class="guide-title">HƯỚNG DẪN SỬ DỤNG CHƯƠNG TRÌNH MÔ PHỎNG MÔ HÌNH EFGT</div>
     <div class="guide-section">Tính toán năng lượng tạo ra trong 1 giây từ lượng rác đầu vào được cố định</div>
     <ul style="margin: 0 0 8px 0; padding-left: 20px; color: #000000;">
-        <li><b>Thiết lập lưu lượng rác nạp:</b> Nhập giá trị lượng rác đầu vào (từ <code>10.0</code> đến <code>500.0 g/s</code>) vào ô <i>«Nhập lượng rác nạp (g/s)»</i>. Lưu ý: Chỉ điều chỉnh được thông số này khi hệ thống đang ở trạng thái <b>Dừng</b>.</li>
+        <li><b>Thiết lập lưu lượng rác nạp:</b> Nhập giá trị lượng rác đầu vào (từ <b>10.0</b> đến <b>500.0 g/s</b>) vào ô <i>«Nhập lượng rác nạp (g/s)»</i>. Lưu ý: Chỉ điều chỉnh được thông số này khi hệ thống đang ở trạng thái <b>Dừng</b>.</li>
     </ul>
     <div class="guide-section">Mô phỏng quá trình giả lập sử dụng chương trình mô phỏng mô hình EFGT</div>
     <ul style="margin: 0; padding-left: 20px; color: #000000;">
         <li><b>Bước 1: Vận hành mô phỏng:</b> Nhấn nút <b>«Bắt đầu / Dừng»</b> để khởi chạy hoặc tạm dừng quá trình mô phỏng theo thời gian thực (cập nhật mỗi 1 giây, cánh quạt máy nén khí và tuabin khí sẽ xoay đồng bộ).</li>
-        <li><b>Bước 2: Quan sát sơ đồ & biểu đồ:</b> Theo dõi hướng dịch chuyển của dòng khí, nhiệt, rác thải và dòng điện trên <b>Sơ đồ hệ thống EFGT</b> (bên trái) cùng đồ thị biến thiên <b>Tải Rác</b> và <b>Điện Lưới</b> (bên phải).</li>
+        <li><b>Bước 2: Quan sát sơ đồ &amp; biểu đồ:</b> Theo dõi hướng dịch chuyển của dòng khí, nhiệt, rác thải và dòng điện trên <b>Sơ đồ hệ thống EFGT</b> (bên trái) cùng đồ thị biến thiên <b>Tải Rác</b> và <b>Điện Lưới</b> (bên phải).</li>
         <li><b>Bước 3: Tra cứu dữ liệu tại từng thời điểm:</b> Nhấp chuột trực tiếp vào bất kỳ điểm nào trên <b>Biểu đồ Real-time</b> để xem lại chính xác các chỉ số <i>Rác Nạp</i>, <i>Điện Lưới</i>, <i>Nhiệt Độ Khí</i> và <i>Tích Lũy</i> tại giây đó.</li>
-        <li><b>Bước 4: Khởi tạo lại (Reset):</b> Nhấn nút <b>«Reset»</b> để xóa toàn bộ lịch sử biểu đồ, đưa thời gian và điện năng tích lũy về <code>0</code> trước khi chạy kịch bản mới.</li>
+        <li><b>Bước 4: Khởi tạo lại (Reset):</b> Nhấn nút <b>«Reset»</b> để xóa toàn bộ lịch sử biểu đồ, đưa thời gian và điện năng tích lũy về <b>0</b> trước khi chạy kịch bản mới.</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
