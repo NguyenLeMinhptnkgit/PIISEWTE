@@ -347,7 +347,7 @@ svg_fuel = st.session_state.y_fuel[-1] if (st.session_state.running and st.sessi
 
 # --- CỘT TRÁI: SƠ ĐỒ HỆ THỐNG ---
 with col_left:
-    st.markdown("<p style='font-size: 13px; font-weight: 800; color: #000000; margin-bottom: 4px;'>SƠ ĐỒ HỆ THỐNG EFGT</p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 13px; font-weight: 800; color: #000000; margin-bottom: 4px;'>SƠ ĐỒ MÔ HÌNH EFGT</p>", unsafe_allow_html=True)
     svg_code = tao_so_do_svg_moi(st.session_state.running, svg_fuel)
     st.markdown(svg_code, unsafe_allow_html=True)
 
@@ -480,7 +480,7 @@ st.markdown("""
     <div class="guide-section">Mô phỏng quá trình giả lập sử dụng chương trình mô phỏng mô hình EFGT</div>
     <ul style="margin: 0; padding-left: 20px; color: #000000;">
         <li><b>Bước 1: Vận hành mô phỏng:</b> Nhấn nút <b>«Bắt đầu / Dừng»</b> để khởi chạy hoặc tạm dừng quá trình mô phỏng theo thời gian thực (cập nhật mỗi 1 giây, cánh quạt máy nén khí và tuabin khí sẽ xoay đồng bộ).</li>
-        <li><b>Bước 2: Quan sát sơ đồ &amp; biểu đồ:</b> Theo dõi hướng dịch chuyển của dòng khí, nhiệt, rác thải và dòng điện trên <b>Sơ đồ hệ thống EFGT</b> (bên trái) cùng đồ thị biến thiên <b>Tải Rác</b> và <b>Điện Lưới</b> (bên phải).</li>
+        <li><b>Bước 2: Quan sát sơ đồ &amp; biểu đồ:</b> Theo dõi hướng dịch chuyển của dòng khí, nhiệt, rác thải và dòng điện trên <b>Sơ đồ mô hình EFGT</b> (bên trái) cùng đồ thị biến thiên <b>Tải Rác</b> và <b>Điện Lưới</b> (bên phải).</li>
         <li><b>Bước 3: Tra cứu dữ liệu tại từng thời điểm:</b> Nhấp chuột trực tiếp vào bất kỳ điểm nào trên <b>Biểu đồ Real-time</b> để xem lại chính xác các chỉ số <i>Rác Nạp</i>, <i>Điện Lưới</i>, <i>Nhiệt Độ Khí</i> và <i>Tích Lũy</i> tại giây đó.</li>
         <li><b>Bước 4: Khởi tạo lại (Reset):</b> Nhấn nút <b>«Reset»</b> để xóa toàn bộ lịch sử biểu đồ, đưa thời gian và điện năng tích lũy về <b>0</b> trước khi chạy kịch bản mới.</li>
     </ul>
