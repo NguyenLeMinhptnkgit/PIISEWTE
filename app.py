@@ -32,15 +32,6 @@ st.markdown("""
         color: #000000 !important;
         font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
     }
-    code {
-        background-color: #f1f5f9 !important;
-        color: #000000 !important;
-        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
-        font-weight: 700 !important;
-        padding: 1px 5px !important;
-        border-radius: 4px !important;
-        border: 1px solid #cbd5e1 !important;
-    }
     .main-title {
         text-align: center;
         color: #000000 !important;
@@ -52,35 +43,42 @@ st.markdown("""
         border-bottom: 2px solid #000000 !important;
     }
     
-    /* TẠO HỘP VIỀN NỔI BẬT NỀN TRẮNG CHỮ ĐEN CHO 4 Ô METRIC (ĐỒNG ĐỀU CHIỀU CAO, KHÔNG CẮT CHỮ) */
-    [data-testid="stMetric"] {
-        background-color: #ffffff !important;
-        border: 1.5px solid #000000 !important;
-        border-radius: 10px !important;
-        padding: 8px 8px !important;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
-        text-align: center !important;
-        min-height: 96px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
+    /* THẺ HIỂN THỊ THÔNG SỐ ĐỒNG BỘ, KHÔNG RỚT CHỮ */
+    .metric-card {
+        background-color: #ffffff;
+        border: 1.5px solid #000000;
+        border-radius: 10px;
+        padding: 10px 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        min-height: 98px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
     }
-    [data-testid="stMetricLabel"], [data-testid="stMetricLabel"] > div, [data-testid="stMetricLabel"] p {
-        font-size: 11px !important;
-        font-weight: 700 !important;
+    .metric-card-label {
+        font-size: 11.5px;
+        font-weight: 700;
         color: #000000 !important;
-        white-space: normal !important;
-        overflow: visible !important;
-        text-overflow: clip !important;
-        line-height: 1.25 !important;
-        justify-content: center !important;
-        text-align: center !important;
+        line-height: 1.3;
+        text-align: center;
+        word-break: keep-all;
     }
-    [data-testid="stMetricValue"], [data-testid="stMetricValue"] > div {
-        font-size: 15px !important;
-        font-weight: 800 !important;
+    .metric-card-sub {
+        display: block;
+        font-size: 10.5px;
+        font-weight: 600;
         color: #000000 !important;
-        margin-top: 4px !important;
+        margin-top: 2px;
+        white-space: nowrap;
+    }
+    .metric-card-value {
+        font-size: 16px;
+        font-weight: 800;
+        color: #000000 !important;
+        margin-top: 6px;
+        white-space: nowrap;
     }
     
     /* Nút bấm & Ô nhập liệu nền trắng, viền đen, chữ đen */
@@ -401,8 +399,8 @@ def render_chart():
         paper_bgcolor='#ffffff',
         plot_bgcolor='#ffffff',
         font=dict(color='#000000', family="Segoe UI, Roboto, Arial, sans-serif"),
-        margin=dict(l=15, r=15, t=10, b=38),
-        height=330,
+        margin=dict(l=15, r=15, t=10, b=45),
+        height=335,
         showlegend=False,
         dragmode="pan",
         hovermode="closest",
@@ -452,7 +450,7 @@ with col_right:
                     selected_idx = st.session_state.x_data.index(target_x)
     else:
         st.markdown(
-            "<div style='height: 330px; background-color: #ffffff; border: 1.5px solid #000000; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000000; font-size: 13px; font-weight: 600;'>Nhấn «Bắt đầu / Dừng» để hiển thị biểu đồ thời gian thực</div>",
+            "<div style='height: 335px; background-color: #ffffff; border: 1.5px solid #000000; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000000; font-size: 13px; font-weight: 600;'>Nhấn «Bắt đầu / Dừng» để hiển thị biểu đồ thời gian thực</div>",
             unsafe_allow_html=True
         )
 
@@ -473,12 +471,39 @@ with col_right:
         current_t4 = t4_calc
         current_energy = st.session_state.total_energy_kwh
 
-    st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Lượng rác đưa vào hệ thống", f"{current_fuel:.1f} g/s")
-    m2.metric("Lượng điện tạo ra trong 1 giờ (Tính từ lượng rác đưa vào hệ thống)", f"{current_power:.2f} kWh")
-    m3.metric("Nhiệt Độ Khí", f"{current_t4:.1f} °C")
-    m4.metric("Tổng lượng điện tạo ra tính từ lúc khởi động hệ thống", f"{current_energy:.4f} kW")
+    st.markdown("<div style='margin-top: 8px;'></div>", unsafe_allow_html=True)
+    m1, m2, m3, m4 = st.columns([1.05, 1.45, 0.85, 1.35])
+    with m1:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-card-label">Lượng rác đưa vào<br>hệ thống</div>
+            <div class="metric-card-value">{current_fuel:.1f} g/s</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with m2:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-card-label">
+                Lượng điện tạo ra trong 1 giờ
+                <span class="metric-card-sub">(Tính từ lượng rác đưa vào hệ thống)</span>
+            </div>
+            <div class="metric-card-value">{current_power:.2f} kWh</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with m3:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-card-label">Nhiệt Độ Khí</div>
+            <div class="metric-card-value">{current_t4:.1f} °C</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with m4:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-card-label">Tổng lượng điện tạo ra<br>tính từ lúc khởi động hệ thống</div>
+            <div class="metric-card-value">{current_energy:.4f} kW</div>
+        </div>
+        """, unsafe_allow_html=True)
 
 # --- HƯỚNG DẪN SỬ DỤNG MÔ PHỎNG ---
 st.markdown("""
