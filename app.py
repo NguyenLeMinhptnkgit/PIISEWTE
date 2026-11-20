@@ -52,32 +52,35 @@ st.markdown("""
         border-bottom: 2px solid #000000 !important;
     }
     
-    /* TẠO HỘP VIỀN NỔI BẬT NỀN TRẮNG CHỮ ĐEN CHO 4 Ô METRIC */
+    /* TẠO HỘP VIỀN NỔI BẬT NỀN TRẮNG CHỮ ĐEN CHO 4 Ô METRIC (ĐỒNG ĐỀU CHIỀU CAO, KHÔNG CẮT CHỮ) */
     [data-testid="stMetric"] {
         background-color: #ffffff !important;
         border: 1.5px solid #000000 !important;
         border-radius: 10px !important;
-        padding: 8px 10px !important;
+        padding: 8px 8px !important;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+        text-align: center !important;
+        min-height: 96px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+    }
+    [data-testid="stMetricLabel"], [data-testid="stMetricLabel"] > div, [data-testid="stMetricLabel"] p {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        color: #000000 !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        line-height: 1.25 !important;
+        justify-content: center !important;
         text-align: center !important;
     }
     [data-testid="stMetricValue"], [data-testid="stMetricValue"] > div {
         font-size: 15px !important;
         font-weight: 800 !important;
         color: #000000 !important;
-    }
-    [data-testid="stMetricLabel"], [data-testid="stMetricLabel"] > div, [data-testid="stMetricLabel"] p {
-        font-size: 12px !important;
-        font-weight: 700 !important;
-        color: #000000 !important;
-    }
-    .metric-caption {
-        font-size: 11.5px !important;
-        font-weight: 700 !important;
-        color: #000000 !important;
-        line-height: 1.35 !important;
-        margin-top: 6px !important;
-        text-align: left !important;
+        margin-top: 4px !important;
     }
     
     /* Nút bấm & Ô nhập liệu nền trắng, viền đen, chữ đen */
@@ -381,7 +384,7 @@ def render_chart():
         name='Tải Rác',
         line=dict(color='#dc2626', width=2.5),
         marker=dict(size=6, color='#dc2626'),
-        hovertemplate="<b>Thời gian:</b> %{x}s<br><b>Rác nạp:</b> %{y:.1f} g/s<extra></extra>"
+        hovertemplate="<b>Thời gian:</b> %{x}s<br><b>Lượng rác đưa vào hệ thống:</b> %{y:.1f} g/s<extra></extra>"
     ), row=1, col=1)
 
     fig.add_trace(go.Scatter(
@@ -391,7 +394,7 @@ def render_chart():
         name='Điện Lưới',
         line=dict(color='#0284c7', width=2.5),
         marker=dict(size=6, color='#0284c7'),
-        hovertemplate="<b>Thời gian:</b> %{x}s<br><b>Điện lưới:</b> %{y:.2f} kWh<extra></extra>"
+        hovertemplate="<b>Thời gian:</b> %{x}s<br><b>Lượng điện tạo ra trong 1 giờ:</b> %{y:.2f} kWh<extra></extra>"
     ), row=2, col=1)
 
     fig.update_layout(
@@ -472,17 +475,10 @@ with col_right:
 
     st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
     m1, m2, m3, m4 = st.columns(4)
-    with m1:
-        st.metric("Rác Nạp", f"{current_fuel:.1f} g/s")
-        st.markdown("<div class='metric-caption'>Lượng rác đưa vào hệ thống</div>", unsafe_allow_html=True)
-    with m2:
-        st.metric("Điện Lưới", f"{current_power:.2f} kWh")
-        st.markdown("<div class='metric-caption'>Lượng điện tạo ra trong 1 giờ<br>(Tính từ lượng rác đưa vào hệ thống)</div>", unsafe_allow_html=True)
-    with m3:
-        st.metric("Nhiệt Độ Khí", f"{current_t4:.1f} °C")
-    with m4:
-        st.metric("Tích Lũy", f"{current_energy:.4f} kW")
-        st.markdown("<div class='metric-caption'>Tổng lượng điện tạo ra tính từ lúc<br>khởi động hệ thống</div>", unsafe_allow_html=True)
+    m1.metric("Lượng rác đưa vào hệ thống", f"{current_fuel:.1f} g/s")
+    m2.metric("Lượng điện tạo ra trong 1 giờ (Tính từ lượng rác đưa vào hệ thống)", f"{current_power:.2f} kWh")
+    m3.metric("Nhiệt Độ Khí", f"{current_t4:.1f} °C")
+    m4.metric("Tổng lượng điện tạo ra tính từ lúc khởi động hệ thống", f"{current_energy:.4f} kW")
 
 # --- HƯỚNG DẪN SỬ DỤNG MÔ PHỎNG ---
 st.markdown("""
@@ -496,7 +492,7 @@ st.markdown("""
     <ul style="margin: 0; padding-left: 20px; color: #000000;">
         <li><b>Bước 1: Vận hành mô phỏng:</b> Nhấn nút <b>«Bắt đầu / Dừng»</b> để khởi chạy hoặc tạm dừng quá trình mô phỏng theo thời gian thực (cập nhật mỗi 1 giây, cánh quạt máy nén khí và tuabin khí sẽ xoay đồng bộ).</li>
         <li><b>Bước 2: Quan sát sơ đồ &amp; biểu đồ:</b> Theo dõi hướng dịch chuyển của dòng khí, nhiệt, rác thải và dòng điện trên <b>Sơ đồ hệ thống EFGT</b> (bên trái) cùng đồ thị biến thiên <b>Tải Rác</b> và <b>Điện Lưới</b> (bên phải).</li>
-        <li><b>Bước 3: Tra cứu dữ liệu tại từng thời điểm:</b> Nhấp chuột trực tiếp vào bất kỳ điểm nào trên <b>Biểu đồ Real-time</b> để xem lại chính xác các chỉ số <i>Rác Nạp</i>, <i>Điện Lưới</i>, <i>Nhiệt Độ Khí</i> và <i>Tích Lũy</i> tại giây đó.</li>
+        <li><b>Bước 3: Tra cứu dữ liệu tại từng thời điểm:</b> Nhấp chuột trực tiếp vào bất kỳ điểm nào trên <b>Biểu đồ Real-time</b> để xem lại chính xác các chỉ số <i>Lượng rác đưa vào hệ thống</i>, <i>Lượng điện tạo ra trong 1 giờ</i>, <i>Nhiệt Độ Khí</i> và <i>Tổng lượng điện tạo ra tính từ lúc khởi động hệ thống</i> tại giây đó.</li>
         <li><b>Bước 4: Khởi tạo lại (Reset):</b> Nhấn nút <b>«Reset»</b> để xóa toàn bộ lịch sử biểu đồ, đưa thời gian và điện năng tích lũy về <b>0</b> trước khi chạy kịch bản mới.</li>
     </ul>
 </div>
