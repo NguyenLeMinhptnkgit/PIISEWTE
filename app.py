@@ -241,30 +241,26 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '</style>',
         '</defs>',
 
-        '<!-- 1. KHỐI HTHE XANH LÁ (GÓC TRÊN TRÁI) -->',
-        '<rect x="145" y="105" width="105" height="54" fill="#2ea44f" rx="10"/>',
-        '<text x="197.5" y="137" fill="#ffffff" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="middle">HTHE</text>',
-
-        '<!-- 2. KHỐI OUTPUT (GÓC TRÊN PHẢI) -->',
+        '<!-- 1. KHỐI OUTPUT (GÓC TRÊN PHẢI) -->',
         '<rect x="570" y="20" width="155" height="58" fill="#b23a3a" rx="10"/>',
         '<text x="647.5" y="56" fill="#ffffff" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle">Output</text>',
         '<line x1="725" y1="49" x2="805" y2="49" stroke="#000000" stroke-width="3.5" marker-end="url(#arr-black)"/>',
 
-        '<!-- 3. BỘ CHUYỂN ĐỔI NHIỆT NĂNG THÀNH ĐIỆN NĂNG HTHE (ĐỘNG CƠ STIRLING) -->',
+        '<!-- 2. BỘ CHUYỂN ĐỔI NHIỆT NĂNG THÀNH ĐIỆN NĂNG HTHE (ĐỘNG CƠ STIRLING) -->',
         '<rect x="375" y="62" width="170" height="102" fill="#b23a3a" rx="10"/>',
         '<text x="460" y="85" fill="#ffffff" class="text-node" text-anchor="middle">Bộ chuyển đổi</text>',
         '<text x="460" y="105" fill="#ffffff" class="text-node" text-anchor="middle">nhiệt năng thành</text>',
         '<text x="460" y="125" fill="#ffffff" class="text-node" text-anchor="middle">điện năng HTHE</text>',
         '<text x="460" y="147" fill="#ffffff" class="text-node" text-anchor="middle">(Động cơ Stirling)</text>',
 
-        '<!-- 4. NHÃN KHÔNG KHÍ & LUỒNG KHÍ SẠCH (MÀU TÍM NHẠT) -->',
+        '<!-- 3. NHÃN KHÔNG KHÍ & LUỒNG KHÍ SẠCH (MÀU TÍM NHẠT) -->',
         '<text x="102" y="242" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Không khí</text>',
         '<line x1="158" y1="236" x2="258" y2="236" stroke="#d59bf6" stroke-width="9" marker-end="url(#arr-purple)"/>',
         '<line x1="352" y1="236" x2="603" y2="236" stroke="#d59bf6" stroke-width="9" marker-end="url(#arr-purple)"/>',
         '<path d="M 656 277 L 656 384 L 562 384" fill="none" stroke="#d59bf6" stroke-width="9" marker-end="url(#arr-purple)"/>',
         '<text x="615" y="407" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Khí sạch nóng</text>',
 
-        '<!-- 5. MÁY NÉN KHÍ (BÊN TRÁI) -->',
+        '<!-- 4. MÁY NÉN KHÍ (BÊN TRÁI) -->',
         '<rect x="270" y="195" width="82" height="82" fill="#000000" rx="18"/>',
         f'<g transform="translate(311, 236)"><g class="{fan_class}">',
         '<line x1="-20" y1="0" x2="20" y2="0" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>',
@@ -272,7 +268,7 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '</g></g>',
         '<text x="311" y="298" fill="#000000" class="text-node" text-anchor="middle">Máy nén khí</text>',
 
-        '<!-- 6. TUABIN KHÍ (BÊN PHẢI) -->',
+        '<!-- 5. TUABIN KHÍ (BÊN PHẢI) -->',
         '<rect x="615" y="195" width="82" height="82" fill="#000000" rx="18"/>',
         f'<g transform="translate(656, 236)"><g class="{fan_class}">',
         '<line x1="-20" y1="0" x2="20" y2="0" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>',
@@ -280,14 +276,14 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '</g></g>',
         '<text x="708" y="241" fill="#000000" class="text-node" text-anchor="start">Tuabin khí</text>',
 
-        '<!-- 7. DÒNG ĐIỆN (MÀU ĐEN) -->',
+        '<!-- 6. DÒNG ĐIỆN (MÀU ĐEN) -->',
         '<line x1="656" y1="195" x2="656" y2="86" stroke="#000000" stroke-width="3.5" marker-end="url(#arr-black)"/>',
         '<text x="666" y="145" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="11.5" font-weight="bold">Động năng &#8594; Điện năng</text>',
 
         '<path d="M 570 49 L 298 49 L 298 187" fill="none" stroke="#000000" stroke-width="3.5" marker-end="url(#arr-black)"/>',
         '<path d="M 375 106 L 324 106 L 324 187" fill="none" stroke="#000000" stroke-width="3.5" marker-end="url(#arr-black)"/>',
 
-        '<!-- 8. NHIỆT TỪ LÒ ĐỐT (MÀU CAM NÉT ĐỨT) -->',
+        '<!-- 7. NHIỆT TỪ LÒ ĐỐT (MÀU CAM NÉT ĐỨT) -->',
         '<line x1="422" y1="350" x2="422" y2="250" stroke="#df6d27" stroke-width="4" stroke-dasharray="9,5" marker-end="url(#arr-orange)"/>',
         '<text x="456" y="275" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Nhiệt</text>',
         '<text x="456" y="291" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle">làm</text>',
@@ -298,12 +294,12 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<text x="526" y="280" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="12.5" font-weight="bold" text-anchor="middle">Nhiệt</text>',
         '<text x="526" y="297" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="12.5" font-weight="bold" text-anchor="middle">dư</text>',
 
-        '<!-- 9. LÒ ĐỐT RÁC NGOÀI (GIỮA DƯỚI) -->',
+        '<!-- 8. LÒ ĐỐT RÁC NGOÀI (GIỮA DƯỚI) -->',
         '<rect x="385" y="350" width="165" height="68" fill="#df6d27" rx="12"/>',
         '<text x="467.5" y="380" fill="#000000" class="text-node" text-anchor="middle">Lò đốt</text>',
         '<text x="467.5" y="400" fill="#000000" class="text-node" text-anchor="middle">rác ngoài</text>',
 
-        '<!-- 10. HỆ THỐNG LỌC KHÍ THẢI & KHÓI THẢI LÒ (XANH LÁ NHẠT) -->',
+        '<!-- 9. HỆ THỐNG LỌC KHÍ THẢI & KHÓI THẢI LÒ (XANH LÁ NHẠT) -->',
         '<rect x="50" y="350" width="185" height="68" fill="#bcf569" rx="12"/>',
         '<text x="142.5" y="371" fill="#000000" class="text-node" text-anchor="middle">Hệ thống</text>',
         '<text x="142.5" y="389" fill="#000000" class="text-node" text-anchor="middle">lọc, thu giữ</text>',
@@ -312,7 +308,7 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<line x1="385" y1="384" x2="243" y2="384" stroke="#9be15d" stroke-width="4" marker-end="url(#arr-green)"/>',
         '<text x="312" y="372" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="12.5" font-weight="bold" text-anchor="middle">Khói thải lò</text>',
 
-        '<!-- 11. RÁC THẢI ĐẦU VÀO & SẤY KHÔ RÁC -->',
+        '<!-- 10. RÁC THẢI ĐẦU VÀO & SẤY KHÔ RÁC -->',
         '<text x="172" y="468" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="17" font-weight="bold" text-anchor="middle">Rác thải</text>',
         '<text x="172" y="490" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="17" font-weight="bold" text-anchor="middle">đầu vào</text>',
 
@@ -327,7 +323,7 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<line x1="462" y1="455" x2="462" y2="425" stroke="#0b6399" stroke-width="3.5" marker-end="url(#arr-blue)"/>',
         '<line x1="515" y1="418" x2="515" y2="448" stroke="#df6d27" stroke-width="4" stroke-dasharray="7,4" marker-end="url(#arr-orange)"/>',
 
-        '<!-- 12. BẢNG CHÚ GIẢI GÓC DƯỚI PHẢI -->',
+        '<!-- 11. BẢNG CHÚ GIẢI GÓC DƯỚI PHẢI -->',
         '<g transform="translate(610, 442)">',
         '<line x1="0" y1="10" x2="32" y2="10" stroke="#000000" stroke-width="3.5" marker-end="url(#arr-black)"/>',
         '<text x="42" y="14" class="legend-text">Hướng đi của dòng điện</text>',
@@ -429,9 +425,9 @@ def render_chart():
 
     return fig
 
-# --- CỘT PHẢI: BIỂU ĐỒ REAL-TIME & METRIC ---
+# --- CỘT PHẢI: BIỂU ĐỒ & METRIC ---
 with col_right:
-    st.markdown("<p style='font-size: 13px; font-weight: 800; color: #000000; margin-bottom: 4px;'>BIỂU ĐỒ REAL-TIME</p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 13px; font-weight: 800; color: #000000; margin-bottom: 4px;'>Biểu đồ biểu thị lượng rác đưa vào lò(g/s) và Công suất điện tạo ra (kWh)</p>", unsafe_allow_html=True)
     fig = render_chart()
     
     selected_idx = None
@@ -512,7 +508,7 @@ st.markdown("""
     <ul style="margin: 0; padding-left: 20px; color: #000000;">
         <li><b>Bước 1: Vận hành mô phỏng:</b> Nhấn nút <b>«Bắt đầu / Dừng»</b> để khởi chạy hoặc tạm dừng quá trình mô phỏng theo thời gian thực (cập nhật mỗi 1 giây, cánh quạt máy nén khí và tuabin khí sẽ xoay đồng bộ).</li>
         <li><b>Bước 2: Quan sát sơ đồ &amp; biểu đồ:</b> Theo dõi hướng dịch chuyển của dòng khí, nhiệt, rác thải và dòng điện trên <b>Sơ đồ hệ thống EFGT</b> (bên trái) cùng đồ thị biến thiên <b>Tải Rác</b> và <b>Điện Lưới</b> (bên phải).</li>
-        <li><b>Bước 3: Tra cứu dữ liệu tại từng thời điểm:</b> Nhấp chuột trực tiếp vào bất kỳ điểm nào trên <b>Biểu đồ Real-time</b> để xem lại chính xác các chỉ số <i>Lượng rác đưa vào hệ thống</i>, <i>Lượng điện tạo ra trong 1 giờ</i>, <i>Nhiệt Độ Khí</i> và <i>Tổng lượng điện tạo ra tính từ lúc khởi động hệ thống</i> tại giây đó.</li>
+        <li><b>Bước 3: Tra cứu dữ liệu tại từng thời điểm:</b> Nhấp chuột trực tiếp vào bất kỳ điểm nào trên <b>Biểu đồ biểu thị lượng rác đưa vào lò(g/s) và Công suất điện tạo ra (kWh)</b> để xem lại chính xác các chỉ số <i>Lượng rác đưa vào hệ thống</i>, <i>Lượng điện tạo ra trong 1 giờ</i>, <i>Nhiệt Độ Khí</i> và <i>Tổng lượng điện tạo ra tính từ lúc khởi động hệ thống</i> tại giây đó.</li>
         <li><b>Bước 4: Khởi tạo lại (Reset):</b> Nhấn nút <b>«Reset»</b> để xóa toàn bộ lịch sử biểu đồ, đưa thời gian và điện năng tích lũy về <b>0</b> trước khi chạy kịch bản mới.</li>
     </ul>
 </div>
