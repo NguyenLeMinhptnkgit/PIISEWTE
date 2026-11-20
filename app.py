@@ -92,18 +92,25 @@ st.markdown("""
         background-color: #f8fafc;
         border: 1.5px solid #000000;
         border-radius: 10px;
-        padding: 12px 16px;
+        padding: 14px 18px;
         margin-top: 12px;
         color: #000000 !important;
         font-family: sans-serif;
         font-size: 13px;
-        line-height: 1.55;
+        line-height: 1.6;
     }
     .guide-title {
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 800;
         color: #000000 !important;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
+    }
+    .guide-section {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #000000 !important;
+        margin-top: 8px;
+        margin-bottom: 4px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -161,17 +168,17 @@ if 'base_fuel' not in st.session_state:
     st.session_state.base_fuel = 85.0
 
 # Tiêu đề chính
-st.markdown("<div class='main-title'>⚡ GIÁM SÁT ĐỒNG BỘ TOÀN DIỆN NHÀ MÁY ĐIỆN RÁC EFGT</div>", unsafe_allow_html=True)
+st.markdown("<div class='main-title'>GIÁM SÁT ĐỒNG BỘ TOÀN DIỆN NHÀ MÁY ĐIỆN RÁC EFGT</div>", unsafe_allow_html=True)
 
 # BẢNG ĐIỀU KHIỂN & Ô NHẬP TẢI RÁC
 col_ctrl1, col_ctrl2, col_input = st.columns([1, 1, 3])
 
 with col_ctrl1:
-    if st.button("🚀 Bắt đầu / Dừng", use_container_width=True):
+    if st.button("Bắt đầu / Dừng", use_container_width=True):
         st.session_state.running = not st.session_state.running
 
 with col_ctrl2:
-    if st.button("🔄 Reset", use_container_width=True):
+    if st.button("Reset", use_container_width=True):
         st.session_state.x_data.clear()
         st.session_state.y_fuel.clear()
         st.session_state.y_power.clear()
@@ -183,7 +190,7 @@ with col_ctrl2:
 
 with col_input:
     fuel_input = st.number_input(
-        "🔥 Nhập lượng rác nạp (g/s):",
+        "Nhập lượng rác nạp (g/s):",
         min_value=10.0,
         max_value=500.0,
         value=float(st.session_state.base_fuel),
@@ -329,7 +336,7 @@ svg_fuel = st.session_state.y_fuel[-1] if (st.session_state.running and st.sessi
 
 # --- CỘT TRÁI: SƠ ĐỒ HỆ THỐNG ---
 with col_left:
-    st.markdown("<p style='font-size: 13px; font-weight: 800; color: #000000; margin-bottom: 4px;'>⚙️ SƠ ĐỒ HỆ THỐNG EFGT</p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 13px; font-weight: 800; color: #000000; margin-bottom: 4px;'>SƠ ĐỒ HỆ THỐNG EFGT</p>", unsafe_allow_html=True)
     svg_code = tao_so_do_svg_moi(st.session_state.running, svg_fuel)
     st.markdown(svg_code, unsafe_allow_html=True)
 
@@ -350,7 +357,7 @@ def render_chart():
         name='Tải Rác',
         line=dict(color='#dc2626', width=2.5),
         marker=dict(size=6, color='#dc2626'),
-        hovertemplate="⏱ <b>Thời gian:</b> %{x}s<br>🔥 <b>Rác nạp:</b> %{y:.1f} g/s<extra></extra>"
+        hovertemplate="<b>Thời gian:</b> %{x}s<br><b>Rác nạp:</b> %{y:.1f} g/s<extra></extra>"
     ), row=1, col=1)
 
     fig.add_trace(go.Scatter(
@@ -360,7 +367,7 @@ def render_chart():
         name='Điện Lưới',
         line=dict(color='#0284c7', width=2.5),
         marker=dict(size=6, color='#0284c7'),
-        hovertemplate="⏱ <b>Thời gian:</b> %{x}s<br>⚡ <b>Điện lưới:</b> %{y:.2f} kWh<extra></extra>"
+        hovertemplate="<b>Thời gian:</b> %{x}s<br><b>Điện lưới:</b> %{y:.2f} kWh<extra></extra>"
     ), row=2, col=1)
 
     fig.update_layout(
@@ -402,7 +409,7 @@ def render_chart():
 
 # --- CỘT PHẢI: BIỂU ĐỒ REAL-TIME & METRIC ---
 with col_right:
-    st.markdown("<p style='font-size: 13px; font-weight: 800; color: #000000; margin-bottom: 4px;'>📊 BIỂU ĐỒ REAL-TIME</p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 13px; font-weight: 800; color: #000000; margin-bottom: 4px;'>BIỂU ĐỒ REAL-TIME</p>", unsafe_allow_html=True)
     fig = render_chart()
     
     selected_idx = None
@@ -416,7 +423,7 @@ with col_right:
                     selected_idx = st.session_state.x_data.index(target_x)
     else:
         st.markdown(
-            "<div style='height: 320px; background-color: #ffffff; border: 1.5px solid #000000; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000000; font-size: 13px; font-weight: 600;'>Nhấn «🚀 Bắt đầu / Dừng» để hiển thị biểu đồ thời gian thực</div>",
+            "<div style='height: 320px; background-color: #ffffff; border: 1.5px solid #000000; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000000; font-size: 13px; font-weight: 600;'>Nhấn «Bắt đầu / Dừng» để hiển thị biểu đồ thời gian thực</div>",
             unsafe_allow_html=True
         )
 
@@ -439,21 +446,25 @@ with col_right:
 
     st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
     m1, m2, m3, m4 = st.columns(4)
-    m1.metric("🔥 Rác Nạp", f"{current_fuel:.1f} g/s")
-    m2.metric("⚡ Điện Lưới", f"{current_power:.2f} kWh")
-    m3.metric("🌡️ Nhiệt Độ Khí", f"{current_t4:.1f} °C")
-    m4.metric("🔋 Tích Lũy", f"{current_energy:.4f} kW")
+    m1.metric("Rác Nạp", f"{current_fuel:.1f} g/s")
+    m2.metric("Điện Lưới", f"{current_power:.2f} kWh")
+    m3.metric("Nhiệt Độ Khí", f"{current_t4:.1f} °C")
+    m4.metric("Tích Lũy", f"{current_energy:.4f} kW")
 
 # --- HƯỚNG DẪN SỬ DỤNG MÔ PHỎNG ---
 st.markdown("""
 <div class="guide-box">
-    <div class="guide-title">📖 HƯỚNG DẪN SỬ DỤNG CHƯƠNG TRÌNH MÔ PHỎNG EFGT</div>
+    <div class="guide-title">HƯỚNG DẪN SỬ DỤNG CHƯƠNG TRÌNH MÔ PHỎNG MÔ HÌNH EFGT</div>
+    <div class="guide-section">Tính toán năng lượng tạo ra trong 1 giây từ lượng rác đầu vào được cố định</div>
+    <ul style="margin: 0 0 8px 0; padding-left: 20px; color: #000000;">
+        <li><b>Thiết lập lưu lượng rác nạp:</b> Nhập giá trị lượng rác đầu vào (từ <code>10.0</code> đến <code>500.0 g/s</code>) vào ô <i>«Nhập lượng rác nạp (g/s)»</i>. Lưu ý: Chỉ điều chỉnh được thông số này khi hệ thống đang ở trạng thái <b>Dừng</b>.</li>
+    </ul>
+    <div class="guide-section">Mô phỏng quá trình giả lập sử dụng chương trình mô phỏng mô hình EFGT</div>
     <ul style="margin: 0; padding-left: 20px; color: #000000;">
-        <li><b>Bước 1 – Thiết lập lưu lượng rác nạp:</b> Nhập giá trị lượng rác đầu vào (từ <code>10.0</code> đến <code>500.0 g/s</code>) vào ô <i>«🔥 Nhập lượng rác nạp (g/s)»</i>. Lưu ý: Chỉ điều chỉnh được thông số này khi hệ thống đang ở trạng thái <b>Dừng</b>.</li>
-        <li><b>Bước 2 – Vận hành mô phỏng:</b> Nhấn nút <b>«🚀 Bắt đầu / Dừng»</b> để khởi chạy hoặc tạm dừng quá trình mô phỏng theo thời gian thực (cập nhật mỗi 1 giây, cánh quạt máy nén khí và tuabin khí sẽ xoay đồng bộ).</li>
-        <li><b>Bước 3 – Quan sát sơ đồ & biểu đồ:</b> Theo dõi hướng dịch chuyển của dòng khí, nhiệt, rác thải và dòng điện trên <b>Sơ đồ hệ thống EFGT</b> (bên trái) cùng đồ thị biến thiên <b>Tải Rác</b> và <b>Điện Lưới</b> (bên phải).</li>
-        <li><b>Bước 4 – Tra cứu dữ liệu tại từng thời điểm:</b> Nhấp chuột trực tiếp vào bất kỳ điểm nào trên <b>Biểu đồ Real-time</b> để xem lại chính xác các chỉ số <i>Rác Nạp</i>, <i>Điện Lưới</i>, <i>Nhiệt Độ Khí</i> và <i>Tích Lũy</i> tại giây đó.</li>
-        <li><b>Bước 5 – Khởi tạo lại (Reset):</b> Nhấn nút <b>«🔄 Reset»</b> để xóa toàn bộ lịch sử biểu đồ, đưa thời gian và điện năng tích lũy về <code>0</code> trước khi chạy kịch bản mới.</li>
+        <li><b>Bước 1: Vận hành mô phỏng:</b> Nhấn nút <b>«Bắt đầu / Dừng»</b> để khởi chạy hoặc tạm dừng quá trình mô phỏng theo thời gian thực (cập nhật mỗi 1 giây, cánh quạt máy nén khí và tuabin khí sẽ xoay đồng bộ).</li>
+        <li><b>Bước 2: Quan sát sơ đồ & biểu đồ:</b> Theo dõi hướng dịch chuyển của dòng khí, nhiệt, rác thải và dòng điện trên <b>Sơ đồ hệ thống EFGT</b> (bên trái) cùng đồ thị biến thiên <b>Tải Rác</b> và <b>Điện Lưới</b> (bên phải).</li>
+        <li><b>Bước 3: Tra cứu dữ liệu tại từng thời điểm:</b> Nhấp chuột trực tiếp vào bất kỳ điểm nào trên <b>Biểu đồ Real-time</b> để xem lại chính xác các chỉ số <i>Rác Nạp</i>, <i>Điện Lưới</i>, <i>Nhiệt Độ Khí</i> và <i>Tích Lũy</i> tại giây đó.</li>
+        <li><b>Bước 4: Khởi tạo lại (Reset):</b> Nhấn nút <b>«Reset»</b> để xóa toàn bộ lịch sử biểu đồ, đưa thời gian và điện năng tích lũy về <code>0</code> trước khi chạy kịch bản mới.</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
