@@ -250,11 +250,12 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<text x="647.5" y="56" fill="#ffffff" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle">Output</text>',
         '<line x1="725" y1="49" x2="805" y2="49" stroke="#000000" stroke-width="3.5" marker-end="url(#arr-black)"/>',
 
-        '<!-- 3. BỘ HTHE GIÁN TIẾP (ĐỘNG CƠ STIRLING) -->',
-        '<text x="457.5" y="73" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="11.5" font-weight="bold" text-anchor="middle">Nhiệt năng &#8594; Điện năng</text>',
-        '<rect x="375" y="80" width="165" height="52" fill="#b23a3a" rx="10"/>',
-        '<text x="457.5" y="102" fill="#ffffff" class="text-node" text-anchor="middle">Bộ HTHE Gián tiếp</text>',
-        '<text x="457.5" y="120" fill="#ffffff" class="text-node" text-anchor="middle">(Động cơ Stirling)</text>',
+        '<!-- 3. BỘ CHUYỂN ĐỔI NHIỆT NĂNG THÀNH ĐIỆN NĂNG HTHE (ĐỘNG CƠ STIRLING) -->',
+        '<rect x="375" y="62" width="170" height="102" fill="#b23a3a" rx="10"/>',
+        '<text x="460" y="85" fill="#ffffff" class="text-node" text-anchor="middle">Bộ chuyển đổi</text>',
+        '<text x="460" y="105" fill="#ffffff" class="text-node" text-anchor="middle">nhiệt năng thành</text>',
+        '<text x="460" y="125" fill="#ffffff" class="text-node" text-anchor="middle">điện năng HTHE</text>',
+        '<text x="460" y="147" fill="#ffffff" class="text-node" text-anchor="middle">(Động cơ Stirling)</text>',
 
         '<!-- 4. NHÃN KHÔNG KHÍ & LUỒNG KHÍ SẠCH (MÀU TÍM NHẠT) -->',
         '<text x="102" y="242" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle">Không khí</text>',
@@ -293,7 +294,7 @@ def tao_so_do_svg_moi(is_running=False, fuel_grams=85.0):
         '<text x="456" y="307" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle">nóng</text>',
         '<text x="456" y="323" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle">khí</text>',
 
-        '<line x1="490" y1="350" x2="490" y2="140" stroke="#df6d27" stroke-width="4" stroke-dasharray="9,5" marker-end="url(#arr-orange)"/>',
+        '<line x1="490" y1="350" x2="490" y2="172" stroke="#df6d27" stroke-width="4" stroke-dasharray="9,5" marker-end="url(#arr-orange)"/>',
         '<text x="526" y="280" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="12.5" font-weight="bold" text-anchor="middle">Nhiệt</text>',
         '<text x="526" y="297" fill="#000000" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="12.5" font-weight="bold" text-anchor="middle">dư</text>',
 
